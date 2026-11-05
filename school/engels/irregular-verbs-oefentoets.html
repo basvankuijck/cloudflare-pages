@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oefentoets Irregular Verbs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --page:#eef3f8;
+  --line:#d5e2f0;
+  --margin:#f2a7a7;
+  --ink:#1c2b4a;
+  --muted:#5b6b85;
+  --pen:#1f4fbf;
+  --red:#d0283a;
+  --green:#1f8a4c;
+  --given:#eef3fb;
+  --btn:#1f4fbf;
+  --btn-text:#ffffff;
+  --focus:#f5b700;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --paper:#1b2230;
+    --page:#121722;
+    --line:#2b3547;
+    --margin:#7a3a42;
+    --ink:#e6ecf5;
+    --muted:#9aa8bf;
+    --pen:#8fb3ff;
+    --red:#ff6b78;
+    --green:#5fd394;
+    --given:#232c3d;
+    --btn:#8fb3ff;
+    --btn-text:#121722;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--page);color:var(--ink);
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:17px;line-height:1.5;
+  padding:24px 16px 48px;
+}
+.sheet{
+  max-width:760px;margin:0 auto;background:var(--paper);
+  border-radius:4px;box-shadow:0 1px 0 var(--line),0 8px 24px rgba(20,40,80,.08);
+  padding:28px 28px 32px 56px;position:relative;
+}
+.sheet::before{ /* kantlijn */
+  content:"";position:absolute;top:0;bottom:0;left:36px;width:2px;background:var(--margin);
+}
+header{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+h1{font-size:1.7rem;line-height:1.2;margin:0}
+.sub{color:var(--muted);margin:4px 0 0}
+button{
+  font:inherit;font-weight:700;border:2px solid var(--btn);border-radius:8px;
+  padding:9px 16px;cursor:pointer;background:transparent;color:var(--btn);
+}
+button.primary{background:var(--btn);color:var(--btn-text)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.tablewrap{overflow-x:auto;margin-top:20px}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th{text-align:left;font-size:.95rem;color:var(--muted);font-weight:700;padding:6px 6px 8px;border-bottom:2px solid var(--line)}
+td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+td.nr{width:2.5em;color:var(--muted);padding-top:12px}
+.given{
+  display:block;background:var(--given);border-radius:6px;padding:7px 10px;font-weight:700;
+}
+input{
+  width:100%;font-family:"Kalam","Comic Neue","Segoe Print",cursive;font-size:1.25rem;color:var(--pen);
+  background:transparent;border:none;border-bottom:2px dashed var(--line);padding:4px 6px 2px;border-radius:0;
+}
+input:disabled{opacity:1;-webkit-text-fill-color:currentColor}
+input.ok{color:var(--green);border-bottom-color:var(--green)}
+input.wrong{color:var(--red);border-bottom-color:var(--red);text-decoration:line-through}
+.fix{display:block;font-family:"Kalam",cursive;color:var(--red);font-size:1.1rem;padding-left:6px}
+.check{display:inline-block;color:var(--green);font-weight:700;margin-left:4px}
+footer{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-top:24px}
+.result{display:flex;align-items:center;gap:16px}
+.grade{
+  width:84px;height:84px;border:3px solid var(--red);border-radius:50%;
+  display:grid;place-items:center;color:var(--red);
+  font-family:"Kalam",cursive;font-size:2rem;font-weight:700;transform:rotate(-8deg);
+}
+.result p{margin:0}
+.result .big{font-size:1.25rem;font-weight:700}
+.hidden{display:none}
+.msg{color:var(--red);margin:0}
+@media (max-width:560px){
+  body{padding:12px 8px 32px;font-size:16px}
+  .sheet{padding:20px 14px 24px 34px}
+  .sheet::before{left:22px}
+  h1{font-size:1.4rem}
+}
+@media print{
+  body{background:#fff}
+  .sheet{box-shadow:none}
+  button{display:none}
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header>
+    <div>
+      <h1>Irregular verbs</h1>
+      <p class="sub">Vul in elke rij de twee ontbrekende vormen in.</p>
+    </div>
+    <button id="newBtn" type="button">15 nieuwe woorden</button>
+  </header>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>Infinitive</th><th>Past simple</th><th>Past participle</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <button id="checkBtn" class="primary" type="button">Nakijken</button>
+    <p id="msg" class="msg hidden"></p>
+    <div id="result" class="result hidden" aria-live="polite">
+      <div class="grade" id="grade"></div>
+      <div>
+        <p class="big" id="score"></p>
+        <p id="advice"></p>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+const VERBS = [
+["be","was/were","been"],["become","became","become"],["begin","began","begun"],["blow","blew","blown"],
+["break","broke","broken"],["bring","brought","brought"],["build","built","built"],["burn","burned/burnt","burned/burnt"],
+["buy","bought","bought"],["catch","caught","caught"],["choose","chose","chosen"],["come","came","come"],
+["cost","cost","cost"],["cut","cut","cut"],["deal","dealt","dealt"],["dig","dug","dug"],["do","did","done"],
+["draw","drew","drawn"],["dream","dreamed/dreamt","dreamed/dreamt"],["drink","drank","drunk"],["drive","drove","driven"],
+["eat","ate","eaten"],["fall","fell","fallen"],["feed","fed","fed"],["feel","felt","felt"],["fight","fought","fought"],
+["find","found","found"],["fly","flew","flown"],["forget","forgot","forgotten"],["forgive","forgave","forgiven"],
+["freeze","froze","frozen"],["get","got","got"],["give","gave","given"],["go","went","gone"],["grow","grew","grown"],
+["have","had","had"],["hear","heard","heard"],["hide","hid","hidden"],["hit","hit","hit"],["hold","held","held"],
+["hurt","hurt","hurt"],["keep","kept","kept"],["know","knew","known"],["lead","led","led"],
+["learn","learned/learnt","learned/learnt"],["leave","left","left"],["lend","lent","lent"],["let","let","let"],
+["lie","lay","lain"],["light","lit","lit"],["lose","lost","lost"],["make","made","made"],["mean","meant","meant"],
+["meet","met","met"],["pay","paid","paid"],["put","put","put"],["read","read","read"],["ride","rode","ridden"],
+["ring","rang","rung"],["rise","rose","risen"],["run","ran","run"],["say","said","said"],["see","saw","seen"],
+["sell","sold","sold"],["send","sent","sent"],["set","set","set"],["shine","shone","shone"],["shoot","shot","shot"],
+["show","showed","shown"],["shrink","shrank","shrunk"],["shut","shut","shut"],["sing","sang","sung"],["sit","sat","sat"],
+["sleep","slept","slept"],["smell","smelled/smelt","smelled/smelt"],["speak","spoke","spoken"],["spend","spent","spent"],
+["spill","spilled/spilt","spilled/spilt"],["stand","stood","stood"],["steal","stole","stolen"],["swim","swam","swum"],
+["take","took","taken"],["teach","taught","taught"],["tear","tore","torn"],["tell","told","told"],
+["think","thought","thought"],["throw","threw","thrown"],["understand","understood","understood"],
+["wake","woke","woken"],["wear","wore","worn"],["win","won","won"],["write","wrote","written"]
+];
+
+const rowsEl = document.getElementById("rows");
+const resultEl = document.getElementById("result");
+const msgEl = document.getElementById("msg");
+const checkBtn = document.getElementById("checkBtn");
+let current = [];
+let checked = false;
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function newTest(){
+  const picks = shuffle(VERBS.slice()).slice(0,15);
+  const shown = shuffle([0,0,0,0,0,1,1,1,1,1,2,2,2,2,2]);
+  current = picks.map((v,i)=>({forms:v, shown:shown[i]}));
+  checked = false;
+  rowsEl.innerHTML = "";
+  current.forEach((item,i)=>{
+    const tr = document.createElement("tr");
+    const nr = document.createElement("td");
+    nr.className = "nr"; nr.textContent = (i+1)+".";
+    tr.appendChild(nr);
+    for(let c=0;c<3;c++){
+      const td = document.createElement("td");
+      if(c===item.shown){
+        const s = document.createElement("span");
+        s.className = "given"; s.textContent = item.forms[c];
+        td.appendChild(s);
+      } else {
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.autocomplete = "off"; inp.spellcheck = false;
+        inp.setAttribute("autocapitalize","off"); inp.setAttribute("autocorrect","off");
+        inp.dataset.row = i; inp.dataset.col = c;
+        inp.setAttribute("aria-label", `Rij ${i+1}, ${["infinitive","past simple","past participle"][c]}`);
+        td.appendChild(inp);
+      }
+      tr.appendChild(td);
+    }
+    rowsEl.appendChild(tr);
+  });
+  resultEl.classList.add("hidden");
+  msgEl.classList.add("hidden");
+  checkBtn.disabled = false;
+  checkBtn.textContent = "Nakijken";
+  const first = rowsEl.querySelector("input");
+  if(first) first.focus();
+}
+
+function parts(s){
+  return s.toLowerCase().replace(/\s+or\s+/g,"/").split(/[\/,]/).map(x=>x.trim().replace(/\s+/g," ")).filter(Boolean);
+}
+
+function isCorrect(given, expected){
+  const g = parts(given);
+  if(!g.length) return false;
+  const e = parts(expected);
+  return g.every(x=>e.includes(x));
+}
+
+function check(){
+  const inputs = [...rowsEl.querySelectorAll("input")];
+  const empty = inputs.filter(i=>!i.value.trim()).length;
+  if(empty && !checked && !msgEl.dataset.warned){
+    msgEl.textContent = `Je hebt nog ${empty} ${empty===1?"vakje":"vakjes"} leeg. Klik nog een keer om toch na te kijken.`;
+    msgEl.classList.remove("hidden");
+    msgEl.dataset.warned = "1";
+    return;
+  }
+  delete msgEl.dataset.warned;
+  msgEl.classList.add("hidden");
+  let score = 0;
+  inputs.forEach(inp=>{
+    const exp = current[inp.dataset.row].forms[inp.dataset.col];
+    inp.disabled = true;
+    if(isCorrect(inp.value, exp)){
+      score++; inp.classList.add("ok");
+    } else {
+      inp.classList.add("wrong");
+      const fix = document.createElement("span");
+      fix.className = "fix"; fix.textContent = exp;
+      inp.after(fix);
+    }
+  });
+  checked = true;
+  const total = inputs.length;
+  const cijfer = Math.max(1, 1 + 9*score/total);
+  document.getElementById("grade").textContent = cijfer.toFixed(1).replace(".",",");
+  document.getElementById("score").textContent = `${score} van de ${total} goed`;
+  document.getElementById("advice").textContent =
+    score===total ? "Alles goed! Probeer 15 nieuwe woorden." :
+    score>=total*0.8 ? "Heel goed. Bekijk de rode woorden nog even." :
+    score>=total*0.55 ? "Voldoende. Leer de rode woorden en probeer het opnieuw." :
+    "Nog even oefenen. Leer de rode woorden en doe een nieuwe ronde.";
+  resultEl.classList.remove("hidden");
+  checkBtn.disabled = true;
+  checkBtn.textContent = "Nagekeken";
+  resultEl.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"});
+}
+
+rowsEl.addEventListener("keydown", e=>{
+  if(e.key==="Enter" && e.target.tagName==="INPUT"){
+    e.preventDefault();
+    const inputs = [...rowsEl.querySelectorAll("input")];
+    const i = inputs.indexOf(e.target);
+    if(i < inputs.length-1) inputs[i+1].focus(); else checkBtn.focus();
+  }
+});
+rowsEl.addEventListener("input", ()=>{ delete msgEl.dataset.warned; msgEl.classList.add("hidden"); });
+
+document.getElementById("newBtn").addEventListener("click", ()=>{
+  const filled = [...rowsEl.querySelectorAll("input")].some(i=>i.value.trim());
+  if(filled && !checked && !confirm("Je antwoorden worden gewist. Toch 15 nieuwe woorden?")) return;
+  newTest();
+});
+checkBtn.addEventListener("click", check);
+
+newTest();
+</script>
+</body>
+</html>
