@@ -23,7 +23,7 @@
   --focus:#f5b700;
 }
 @media (prefers-color-scheme: dark){
-  :root{
+  :root:not([data-theme="light"]){
     color-scheme:dark;
     --paper:#1b2230;
     --page:#121722;
@@ -39,6 +39,23 @@
     --btn-text:#121722;
   }
 }
+:root[data-theme="dark"]{
+  color-scheme:dark;
+    --paper:#1b2230;
+    --page:#121722;
+    --line:#2b3547;
+    --margin:#7a3a42;
+    --ink:#e6ecf5;
+    --muted:#9aa8bf;
+    --pen:#8fb3ff;
+    --red:#ff6b78;
+    --green:#5fd394;
+    --given:#232c3d;
+    --btn:#8fb3ff;
+    --btn-text:#121722;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
@@ -64,8 +81,9 @@ button{
 }
 button.primary{background:var(--btn);color:var(--btn-text)}
 button:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
 .tablewrap{overflow-x:auto;margin-top:20px}
-table{width:100%;border-collapse:collapse;min-width:480px}
+table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:.95rem;color:var(--muted);font-weight:700;padding:6px 6px 8px;border-bottom:2px solid var(--line)}
 td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
 td.nr{width:2.5em;color:var(--muted);padding-top:12px}
@@ -92,11 +110,24 @@ footer{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:s
 .result .big{font-size:1.25rem;font-weight:700}
 .hidden{display:none}
 .msg{color:var(--red);margin:0}
-@media (max-width:560px){
+@media (max-width:600px){
   body{padding:12px 8px 32px;font-size:16px}
-  .sheet{padding:20px 14px 24px 34px}
-  .sheet::before{left:22px}
+  .sheet{padding:20px 14px 24px 32px}
+  .sheet::before{left:18px}
   h1{font-size:1.4rem}
+  header{flex-direction:column}
+  .actions{width:100%}
+  .actions button{flex:1}
+  .actions #themeBtn{flex:0 0 auto}
+  .tablewrap{overflow:visible;margin-top:12px}
+  table,tbody,td{display:block;width:100%}
+  thead{display:none}
+  tr{display:grid;grid-template-columns:2em 1fr;gap:6px 8px;padding:14px 0;border-bottom:1px solid var(--line)}
+  td{border:none;padding:0;grid-column:2;width:auto}
+  td.nr{grid-column:1;grid-row:1 / span 3;padding-top:4px;width:auto}
+  td:not(.nr)::before{content:attr(data-label);display:block;font-size:.8rem;color:var(--muted);margin-bottom:2px}
+  footer{flex-direction:column;align-items:stretch}
+  #checkBtn{width:100%;padding:12px}
 }
 @media print{
   body{background:#fff}
@@ -104,6 +135,9 @@ footer{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:s
   button{display:none}
 }
 </style>
+<script>
+(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
 </head>
 <body>
 <main class="sheet">
@@ -112,7 +146,10 @@ footer{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:s
       <h1>Irregular verbs</h1>
       <p class="sub">Vul in elke rij de twee ontbrekende vormen in.</p>
     </div>
-    <button id="newBtn" type="button">15 nieuwe woorden</button>
+    <div class="actions">
+      <button id="themeBtn" type="button">☾ Donker</button>
+      <button id="newBtn" type="button">15 nieuwe woorden</button>
+    </div>
   </header>
 
   <div class="tablewrap">
@@ -185,6 +222,7 @@ function newTest(){
     tr.appendChild(nr);
     for(let c=0;c<3;c++){
       const td = document.createElement("td");
+      td.dataset.label = ["Infinitive","Past simple","Past participle"][c];
       if(c===item.shown){
         const s = document.createElement("span");
         s.className = "given"; s.textContent = item.forms[c];
@@ -272,11 +310,39 @@ rowsEl.addEventListener("keydown", e=>{
 rowsEl.addEventListener("input", ()=>{ delete msgEl.dataset.warned; msgEl.classList.add("hidden"); });
 
 document.getElementById("newBtn").addEventListener("click", ()=>{
+  const btn = document.getElementById("newBtn");
   const filled = [...rowsEl.querySelectorAll("input")].some(i=>i.value.trim());
-  if(filled && !checked && !confirm("Je antwoorden worden gewist. Toch 15 nieuwe woorden?")) return;
+  if(filled && !checked && !btn.dataset.armed){
+    btn.dataset.armed = "1";
+    btn.textContent = "Antwoorden wissen?";
+    setTimeout(()=>{ delete btn.dataset.armed; btn.textContent = "15 nieuwe woorden"; }, 4000);
+    return;
+  }
+  delete btn.dataset.armed;
+  btn.textContent = "15 nieuwe woorden";
   newTest();
 });
 checkBtn.addEventListener("click", check);
+
+const themeBtn = document.getElementById("themeBtn");
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+function isDark(){
+  const t = document.documentElement.dataset.theme;
+  return t ? t === "dark" : darkQuery.matches;
+}
+function updateThemeBtn(){
+  const d = isDark();
+  themeBtn.textContent = d ? "☀︎ Licht" : "☾ Donker";
+  themeBtn.setAttribute("aria-label", d ? "Lichte modus aanzetten" : "Donkere modus aanzetten");
+}
+themeBtn.addEventListener("click", ()=>{
+  const next = isDark() ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try{ localStorage.setItem("theme", next); }catch(e){}
+  updateThemeBtn();
+});
+darkQuery.addEventListener("change", updateThemeBtn);
+updateThemeBtn();
 
 newTest();
 </script>
