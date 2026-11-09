@@ -3,128 +3,320 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Oefentoets Biologie - Organen van planten</title>
+<title>Oefentoets Organen van planten</title>
 <style>
-:root{--bg:#f4f7f4;--card:#fff;--tx:#1b2a1f;--mu:#5a6b5e;--ac:#2e7d32;--acx:#fff;--bd:#cfdccf;--ok:#1b7f3b;--okbg:#e2f5e7;--no:#b3261e;--nobg:#fde7e5}
-:root[data-theme=dark]{--bg:#121a14;--card:#1c271f;--tx:#e8f0e9;--mu:#9bb09e;--ac:#66bb6a;--acx:#0d1a10;--bd:#34473a;--ok:#7ddc92;--okbg:#17321e;--no:#ff8a80;--nobg:#3a1c1a}
+:root{
+  color-scheme: light;
+  --bg:#f4f7f2; --card:#ffffff; --text:#1d2a1f; --muted:#5a6b5d; --border:#cfdacb;
+  --accent:#2e7d32; --accent-text:#ffffff; --ok:#1b7a2f; --ok-bg:#e3f5e6;
+  --bad:#b3261e; --bad-bg:#fdeae8; --sel:#e8f2e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#121a14; --card:#1b261d; --text:#e6efe7; --muted:#9db0a0; --border:#34473a;
+    --accent:#66bb6a; --accent-text:#0c1a0e; --ok:#7fdc8a; --ok-bg:#1c3a22;
+    --bad:#ff8a80; --bad-bg:#3d1f1c; --sel:#25382a;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#121a14; --card:#1b261d; --text:#e6efe7; --muted:#9db0a0; --border:#34473a;
+  --accent:#66bb6a; --accent-text:#0c1a0e; --ok:#7fdc8a; --ok-bg:#1c3a22;
+  --bad:#ff8a80; --bad-bg:#3d1f1c; --sel:#25382a;
+}
 *{box-sizing:border-box}
-body{margin:0;font:18px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--tx)}
-main{max-width:720px;margin:0 auto;padding:16px}
-header{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px}
-h1{font-size:1.3rem;margin:0}
-.sub{color:var(--mu);margin:0 0 16px;font-size:.95rem}
-button{font:inherit;min-height:48px;padding:10px 18px;border-radius:12px;border:2px solid var(--ac);background:var(--ac);color:var(--acx);cursor:pointer;font-weight:600}
-button.sec{background:transparent;color:var(--tx);border-color:var(--bd)}
-button:disabled{opacity:.5;cursor:default}
-.q{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
-.q h2{font-size:1.05rem;margin:0 0 12px}
-.q h2 span{color:var(--mu);font-weight:400}
-.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:0 0 8px;min-height:52px;background:transparent;color:var(--tx);border:2px solid var(--bd);font-weight:400}
-.opt.sel{border-color:var(--ac);background:var(--okbg)}
-.opt.good{border-color:var(--ok);background:var(--okbg)}
-.opt.bad{border-color:var(--no);background:var(--nobg)}
-input[type=text]{width:100%;font:inherit;min-height:48px;padding:10px 12px;border-radius:12px;border:2px solid var(--bd);background:var(--bg);color:var(--tx)}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:800px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0}
+button{font:inherit;min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin:14px 0}
+.card.ok{border-color:var(--ok);background:linear-gradient(var(--ok-bg),var(--ok-bg)) }
+.card.bad{border-color:var(--bad)}
+.qhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.num{font-weight:700;color:var(--accent)}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:99px;border:1px solid var(--border);color:var(--muted)}
+.q{margin:0 0 10px;font-weight:600}
+.opt{display:flex;gap:10px;align-items:center;padding:10px 12px;margin:6px 0;border:1px solid var(--border);border-radius:10px;cursor:pointer;min-height:44px}
+.opt:has(input:checked){background:var(--sel);border-color:var(--accent)}
+.opt input{width:20px;height:20px;flex:none;accent-color:var(--accent)}
+input[type=text],select{font:inherit;width:100%;min-height:44px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+table{width:100%;border-collapse:collapse}
+td{padding:6px 8px 6px 0;vertical-align:middle;border-top:1px solid var(--border)}
+td:first-child{width:40%;font-weight:500}
 .fb{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:.95rem}
-.fb.ok{background:var(--okbg);color:var(--ok)}
-.fb.no{background:var(--nobg);color:var(--no)}
+.card.ok .fb{background:var(--ok-bg);color:var(--ok)}
+.card.bad .fb{background:var(--bad-bg);color:var(--bad)}
 .fb b{display:block}
-.bar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-.bar button{flex:1 1 180px}
-#res{background:var(--card);border:2px solid var(--ac);border-radius:14px;padding:16px;text-align:center;font-size:1.2rem}
-.hide{display:none}
+.mark{font-weight:600}
+.rowbad{color:var(--bad)}
+.rowok{color:var(--ok)}
+#score{display:none;text-align:center;font-size:1.2rem;font-weight:700}
+@media (max-width:520px){
+  .wrap{padding:12px}
+  td:first-child{width:auto}
+  table,tbody,tr,td{display:block;width:100%}
+  td{border:0;padding:2px 0}
+  tr{padding:8px 0;border-top:1px solid var(--border)}
+}
 </style>
 </head>
 <body>
-<main>
-<header>
-<h1>Oefentoets Biologie</h1>
-<button class="sec" id="th" aria-label="Wissel licht/donker">Donker</button>
-</header>
-<p class="sub">Thema 2 Organen en cellen - Basisstof 2: Organen van planten</p>
-<div id="qs"></div>
-<div class="bar">
-<button id="chk">Nakijken</button>
-<button class="sec" id="new">Nieuwe vragen</button>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Oefentoets: Organen van planten</h1>
+      <p class="sub">Thema 2 Organen en cellen, basisstof 2 &middot; <span id="count"></span> vragen</p>
+    </div>
+    <button id="themeBtn" type="button" aria-label="Wissel tussen licht en donker">Donker</button>
+  </header>
+
+  <div class="bar">
+    <button class="primary" id="checkBtn" type="button">Nakijken</button>
+    <button id="resetBtn" type="button">Opnieuw</button>
+    <button id="newBtn" type="button">Nieuwe vragen</button>
+  </div>
+
+  <div id="score" class="card" role="status"></div>
+  <div id="quiz"></div>
+  <div class="bar"><button class="primary" id="checkBtn2" type="button">Nakijken</button></div>
 </div>
-<div id="res" class="hide" aria-live="polite"></div>
-</main>
+
 <script>
-const N=10;
-// mc: [vraag, [opties], index goed, uitleg]; op: [vraag, [goede antwoorden (kleine letters)], modelantwoord, uitleg]
-const BANK=[
-["mc","Wat is een hoofdwortel?",["Een lange, dikke wortel waar zijwortels aan zitten","Een wortelhaar","Een wortel van een bol","Het deel van het blad"],0,"De hoofdwortel is de lange, dikke wortel; de zijwortels zijn aftakkingen."],
-["mc","Waar zitten de wortelharen?",["Aan de uiteinden van de zijwortels","Aan de stengel","Op de bladschijf","In de bladsteel"],0,"Wortelharen zitten aan de uiteinden van de zijwortels."],
-["mc","Wat doen wortelharen?",["Water met mineralen opnemen uit de bodem","Voedsel maken","Glucose vervoeren naar het blad","Reservestoffen maken"],0,"Met de wortelharen neemt de plant water met mineralen op."],
-["mc","Wat noem je alle wortels van een plant samen?",["Wortelstelsel","Vatenstelsel","Vaatbundel","Hoofdwortel"],0,"Alle wortels samen vormen het wortelstelsel (een orgaanstelsel)."],
-["mc","Welke functie heeft het wortelstelsel NIET?",["Voedsel maken met fotosynthese","Water en mineralen opnemen","De plant vastzetten in de grond","Reservestoffen opslaan"],0,"Voedsel maken doet het blad. Het wortelstelsel neemt op, zet vast en slaat reservestoffen op."],
-["mc","Wat zijn mineralen?",["Zouten die voedingsstof zijn voor de plant, opgelost in water","Stoffen die de plant opslaat voor later","Lange, dunne buisjes","Het platte deel van het blad"],0,"Mineralen zijn zouten, opgelost in het bodemwater."],
-["mc","Waarom heeft een paardenbloem in de lente snel weer bladeren?",["Reservestoffen in de wortel worden verbruikt","De wortelharen maken glucose","De stengel slaat water op in de winter","De bladeren blijven de hele winter groen"],0,"De wortel blijft in de winter leven en heeft reservestoffen opgeslagen."],
-["mc","Welke planten hebben geen hoofdwortel of zijwortels?",["Bollen, zoals tulpen en uien","Bomen","Paardenbloemen","Struiken"],0,"Bollen hebben geen hoofdwortel of zijwortels."],
-["mc","Waarom zet het wortelstelsel de plant stevig vast?",["De wortels vertakken zich sterk","De wortels maken glucose","De wortels hebben bladmoes","De wortels bestaan uit hout"],0,"Doordat de wortels zich sterk vertakken, staat de plant stevig vast."],
-["mc","Wat zijn de twee functies van de stengel?",["Transport van stoffen en stevigheid geven","Fotosynthese en water opnemen","Reservestoffen opslaan en vastzetten","Water opnemen en glucose maken"],0,"Stengels vervoeren stoffen en geven stevigheid."],
-["mc","Een witte anjer staat in water met rode kleurstof. Na enkele dagen is de bloem rood. Wat toont dit aan?",["De stengel vervoert water met opgeloste stoffen","De bloem maakt rode kleurstof","De wortels nemen kleurstof op","Het water verdampt uit de buis"],0,"De kleurstof wordt door de stengel naar de bloem vervoerd."],
-["mc","Waarom is er bij de proef met de anjer een buis zonder bloem?",["Als controle: om te testen dat het water niet uit de buis verdampt","Om meer kleurstof te hebben","Om de bloem te voeden","Om de wortels te vervangen"],0,"De controle laat zien dat het water niet verdampt uit de buis, maar door de bloem is opgenomen."],
-["mc","Welke plant is houtachtig?",["Een boom","Een tulp","Een anjer","Een paardenbloem"],0,"Bomen en struiken zijn houtachtige planten."],
-["mc","Wat gebeurt er bij een kruidachtige plant bij een tekort aan water?",["De bladeren en stengels worden slap","De plant wordt harder","De stengel wordt houtachtig","Er groeien meer bladeren"],0,"Kruidachtige planten hebben bijna geen hout en zijn alleen stevig zolang er genoeg water is."],
-["mc","Waarmee zit het blad vast aan de stengel?",["De bladsteel","De bladschijf","De hoofdnerf","Het bladmoes"],0,"De bladsteel verbindt het blad met de stengel."],
-["mc","Wat is de bladschijf?",["Het platte gedeelte van het blad","Het deel waarmee het blad aan de stengel zit","Alles tussen de nerven","De buisjes in het blad"],0,"De bladschijf is het platte deel van het blad."],
-["mc","Wat noem je alles tussen de nerven van een blad?",["Bladmoes","Bladsteel","Zijnerf","Vaatbundel"],0,"Het deel tussen de nerven heet bladmoes."],
-["mc","Welke twee functies hebben de nerven in een blad?",["Stevigheid geven en transport van water en andere stoffen","Fotosynthese en opslag","Water opnemen en vastzetten","Voedsel maken en verdampen"],0,"Nerven geven het blad stevigheid en zorgen voor transport."],
-["mc","Wat is de functie van bladeren?",["Voedsel maken voor de plant (fotosynthese)","Water opnemen uit de bodem","De plant vastzetten","Mineralen opslaan"],0,"Bladeren maken voedsel door fotosynthese."],
-["mc","Waar vindt fotosynthese plaats?",["In alle groene delen van de plant, het meest in de bladeren","Alleen in de wortels","Alleen in de bladsteel","Alleen in de nerven"],0,"Alle groene delen doen fotosynthese; in de bladeren het meest."],
-["mc","Hoe komt water in het bladmoes?",["Via de wortels, de stengel en de nerven","Via de bladsteel alleen","Via de bloem","Het blad maakt zelf water"],0,"Wortels nemen water op; het gaat via de stengel en de nerven naar het bladmoes."],
-["mc","Wat zijn vaten?",["Lange, dunne buisjes in de plant voor transport","Aftakkingen van de hoofdwortel","Het platte deel van een blad","Zouten in de bodem"],0,"Vaten zijn lange, dunne buisjes voor transport."],
-["mc","Wat is een vaatbundel?",["Een groepje vaten bij elkaar","Een bundel wortels","Een groep bladeren","Een stuk stengel"],0,"Een groepje vaten bij elkaar heet vaatbundel."],
-["mc","Waar vind je vaatbundels?",["In de wortels, de stengel en de bladeren (nerven)","Alleen in de stengel","Alleen in de wortels","Alleen in de bladschijf tussen de nerven"],0,"Vaatbundels lopen van wortel via stengel naar de nerven van het blad."],
-["mc","Wat is de functie van het vatenstelsel?",["Transport van water, mineralen en glucose","Fotosynthese","Water opnemen uit de bodem","Reservestoffen maken"],0,"Het vatenstelsel zorgt voor transport."],
-["op","Hoe heten de aftakkingen van de hoofdwortel?",["zijwortel"],"Zijwortels","De zijwortels zijn aftakkingen van de hoofdwortel."],
-["op","Hoe heet de lange, dikke wortel waar de zijwortels aan zitten?",["hoofdwortel"],"Hoofdwortel","Dat is de hoofdwortel."],
-["op","Noem een stof die de plant opslaat om later te gebruiken.",["reservestof"],"Reservestoffen","Reservestoffen worden bijvoorbeeld in de wortel opgeslagen."],
-["op","Welk orgaan voert glucose van de bladeren naar de rest van de plant? (Geef alleen het orgaan.)",["stengel"],"De stengel (met vaten)","Glucose gaat van de bladeren door de stengel naar andere delen."],
-["op","Hoe heet de nerf die meestal in het midden van het blad loopt?",["hoofdnerf"],"Hoofdnerf","De aftakkingen heten zijnerven."],
-["op","Hoe heten de aftakkingen van de hoofdnerf?",["zijnerf","zijnerven"],"Zijnerven","De hoofdnerf loopt in het midden, de aftakkingen zijn zijnerven."],
-["op","Hoe noem je alle vaten van een plant samen?",["vatenstelsel"],"Vatenstelsel","Alle vaten samen vormen het vatenstelsel."],
-["op","Hoe noem je een plant met bijna geen hout, zoals een anjer? (houtachtig of kruidachtig)",["kruidachtig"],"Kruidachtig","Kruidachtige planten hebben bijna geen hout."],
-["op","Welk proces maakt voedsel voor de plant in groene delen?",["fotosynthese"],"Fotosynthese","Bladeren doen fotosynthese."],
-["op","Welk deel van de wortel neemt water en mineralen op?",["wortelhaar","wortelharen"],"Wortelharen","Wortelharen zitten aan de uiteinden van de zijwortels."]
+(function(){
+"use strict";
+
+/* ---------- Vragenpool (alles uit het PDF) ---------- */
+// mc: eerste optie is juist; fill: a = geaccepteerde antwoorden
+var POOL = [
+ // Meerkeuze
+ {t:"mc",q:"Welk orgaan(stelsel) neemt water en mineralen op uit de bodem?",o:["Het wortelstelsel","De stengel","Het blad","De bladsteel"],e:"Het wortelstelsel neemt met de wortelharen water en mineralen op uit de bodem."},
+ {t:"mc",q:"Wat zit aan de uiteinden van de zijwortels?",o:["Wortelharen","Vaatbundels","Bladmoes","Reservestoffen"],e:"Aan de uiteinden van de zijwortels zitten de wortelharen."},
+ {t:"mc",q:"Wat is de functie van het blad?",o:["Voedsel maken voor de plant (fotosynthese)","Water opnemen uit de bodem","De plant vastzetten in de grond","Reservestoffen opslaan"],e:"Bladeren maken voedsel voor de plant door fotosynthese."},
+ {t:"mc",q:"Wat zijn mineralen?",o:["Zouten: voedingsstoffen die opgelost zijn in het bodemwater","Stoffen die de plant opslaat om later te gebruiken","Lange dunne buisjes in de plant","Het platte deel van het blad"],e:"Mineralen zijn zouten: voedingsstoffen voor de plant, opgelost in het water in de bodem."},
+ {t:"mc",q:"Bij de stengelproef zet je een witte anjer in water met rode kleurstof. Wat is de conclusie?",o:["De stengel vervoert water met opgeloste stoffen","De bloem maakt zelf de rode kleurstof","De stengel maakt voedsel voor de plant","Het water verdampt uit de reageerbuis"],e:"De bloem werd rood en het water zakte: de stengels vervoeren water met opgeloste stoffen."},
+ {t:"mc",q:"Waarom gebruik je bij de stengelproef ook een reageerbuis zonder bloem?",o:["Als controle: om te testen dat het water niet uit de buis verdampt","Om te zien of de kleurstof zonder bloem rood blijft","Om de bloem extra water te geven","Om twee bloemen te kunnen vergelijken"],e:"De buis zonder bloem is de controle: daarmee test je dat het water niet uit de reageerbuis verdampt."},
+ {t:"mc",q:"Welke planten hebben geen hoofdwortel of zijwortels?",o:["Bollen, zoals tulpen en uien","Bomen","Planten met een lange, dikke hoofdwortel","Kruidachtige planten"],e:"Bollen zoals tulpen en uien hebben geen hoofdwortel of zijwortels."},
+ {t:"mc",q:"Hoe heet het platte gedeelte van een blad?",o:["Bladschijf","Bladsteel","Bladmoes","Hoofdnerf"],e:"De bladschijf is het platte gedeelte van het blad."},
+ {t:"mc",q:"Hoe heet alles wat tussen de nerven van een blad zit?",o:["Bladmoes","Bladschijf","Bladsteel","Zijnerven"],e:"Alles tussen de nerven noem je het bladmoes."},
+ {t:"mc",q:"Wat is kenmerkend voor een kruidachtige plant?",o:["Bijna geen hout; stevig zolang de wortels genoeg water opnemen","Een stevige stengel met veel hout","Geen wortels","Dikke zijwortels die over de bodem kronkelen"],e:"Kruidachtige planten hebben bijna geen hout en zijn alleen stevig als de wortels genoeg water kunnen opnemen."},
+ {t:"mc",q:"Wat gebeurt er met een kruidachtige plant bij een tekort aan water?",o:["De bladeren en stengels worden slap","De stengel wordt harder door hout","De plant maakt extra zijwortels aan de stengel","De bladeren worden rood"],e:"Bij een tekort aan water worden de bladeren en stengels van een kruidachtige plant slap."},
+ {t:"mc",q:"Wat is een vaatbundel?",o:["Een groepje vaten bij elkaar","Alle vaten van een plant samen","Een lange, dunne wortel","De nerven in het bladmoes"],e:"Een vaatbundel is een groepje vaten dat bij elkaar ligt. Alle vaten samen heten het vatenstelsel."},
+ {t:"mc",q:"Welke stof gaat via het vatenstelsel van de bladeren naar de andere delen van de plant?",o:["Glucose","Water","Mineralen","Rode kleurstof"],e:"Glucose gaat van de bladeren naar de andere delen van de plant. Water en mineralen gaan juist van de wortels naar de rest."},
+ {t:"mc",q:"Waar vind je vaatbundels in een plant?",o:["In de wortels, de stengel en de bladnerven","Alleen in de stengel","Alleen in de bladeren","Alleen in de wortels"],e:"Vaatbundels vind je in de wortels, de stengel en de bladeren (nerven)."},
+ {t:"mc",q:"Welke twee functies hebben de nerven van een blad?",o:["Stevigheid geven en transport van water en andere stoffen","Voedsel maken en water opnemen","Het blad vastzetten en reservestoffen opslaan","Water opnemen en glucose maken"],e:"Nerven geven stevigheid aan het blad en zorgen voor transport van water en andere stoffen."},
+ {t:"mc",q:"Hoe komt het water in het bladmoes?",o:["Via de stengel en de nerven","Via de bladsteel alleen","Via wortelharen in het blad","Uit de lucht via de bladschijf"],e:"De wortels nemen water op; via de stengel en de nerven komt het water in het bladmoes."},
+
+ // Invullen
+ {t:"fill",q:"Alle wortels van een plant samen noem je het ...",a:["wortelstelsel"],e:"Alle wortels samen heten het wortelstelsel (een orgaanstelsel)."},
+ {t:"fill",q:"Met de ... neemt de plant water met mineralen op uit de bodem.",a:["wortelharen","wortelhaar"],e:"Met de wortelharen neemt de plant water met mineralen op."},
+ {t:"fill",q:"Mineralen is een ander woord voor ...",a:["zouten","zout"],e:"Mineralen zijn zouten, opgelost in het bodemwater."},
+ {t:"fill",q:"Stoffen die een plant opslaat om ze later te gebruiken heten ...",a:["reservestoffen","reservestof"],e:"Reservestoffen worden opgeslagen om later te gebruiken, bijvoorbeeld om in de lente snel te kunnen groeien."},
+ {t:"fill",q:"Met de ... zit een blad vast aan de stengel.",a:["bladsteel"],e:"Met de bladsteel zit het blad vast aan de stengel."},
+ {t:"fill",q:"De hoofdnerf loopt meestal in het midden van het blad. De aftakkingen van de hoofdnerf heten ...",a:["zijnerven","zijnerf"],e:"De aftakkingen van de hoofdnerf heten zijnerven."},
+ {t:"fill",q:"De lange, dunne buisjes in een plant waarmee stoffen worden vervoerd heten ...",a:["vaten","vat"],e:"Vaten zijn lange, dunne buisjes in de plant voor transport."},
+ {t:"fill",q:"Alle vaten van een plant samen noem je het ...",a:["vatenstelsel"],e:"Alle vaten samen heten het vatenstelsel. De functie ervan is transport."},
+ {t:"fill",q:"Welke kleur kreeg de witte anjer na enkele dagen in de stengelproef?",a:["rood","rode"],e:"De bloem kleurde rood doordat de stengel het rode water vervoerde."},
+ {t:"fill",q:"Het maken van voedsel in de groene delen van de plant heet ...",a:["fotosynthese"],e:"Fotosynthese is het maken van voedsel, vooral in de bladeren."},
+ {t:"fill",q:"Een plant met een stevige stengel met veel hout (zoals een boom of struik) heet een ... plant.",a:["houtachtige","houtachtig"],e:"Bomen en struiken zijn houtachtige planten."},
+ {t:"fill",q:"Een plant met bijna geen hout in de stengel heet een ... plant.",a:["kruidachtige","kruidachtig"],e:"Een kruidachtige plant heeft bijna geen hout in de stengel."},
+ {t:"fill",q:"Welke plant sterft in de herfst af, maar groeit in de lente uit de wortel weer uit?",a:["paardenbloem","de paardenbloem"],e:"De wortel van de paardenbloem blijft leven en gebruikt reservestoffen om in de lente snel te groeien."},
+
+ // Waar of onwaar
+ {t:"tf",q:"Alle planten hebben wortels.",a:true,e:"Klopt: alle planten hebben wortels, maar ze zien er vaak anders uit."},
+ {t:"tf",q:"Een ui heeft een hoofdwortel met zijwortels.",a:false,e:"Bollen zoals tulpen en uien hebben geen hoofdwortel of zijwortels."},
+ {t:"tf",q:"Wortelharen zitten aan de uiteinden van de zijwortels.",a:true,e:"Klopt: wortelharen zitten aan de uiteinden van de zijwortels."},
+ {t:"tf",q:"Door de stengel gaan alleen water en mineralen, nooit glucose.",a:false,e:"Door de stengel gaan water en mineralen van de wortels naar de bladeren, en glucose van de bladeren naar andere delen."},
+ {t:"tf",q:"Fotosynthese vindt alleen plaats in de bladeren.",a:false,e:"Fotosynthese vindt plaats in alle groene delen van een plant, maar in de bladeren het meest."},
+ {t:"tf",q:"Een kruidachtige plant bevat veel hout.",a:false,e:"Kruidachtige planten bevatten bijna geen hout."},
+ {t:"tf",q:"De nerven van een blad bestaan uit vaatbundels.",a:true,e:"Klopt: ook de nerven van het blad bestaan uit vaatbundels."},
+ {t:"tf",q:"De reageerbuis zonder bloem laat zien dat het water niet uit de buis verdampt.",a:true,e:"Klopt: dat is de controle bij de stengelproef."},
+ {t:"tf",q:"De bladmoes is het deel waarmee het blad vastzit aan de stengel.",a:false,e:"Dat is de bladsteel. Bladmoes is alles tussen de nerven."},
+ {t:"tf",q:"Doordat de wortels zich sterk vertakken, staat de plant stevig vast in de grond.",a:true,e:"Klopt: zo zetten de wortels de plant stevig vast."},
+ {t:"tf",q:"Een paardenbloem gebruikt in de lente reservestoffen uit de wortel om snel te groeien.",a:true,e:"Klopt: de reservestoffen in de wortel worden dan verbruikt."},
+
+ // Koppelvragen
+ {t:"match",q:"Koppel elk orgaan(stelsel) aan zijn functie.",pairs:[
+   ["Wortelstelsel","Water en mineralen opnemen, plant vastzetten, reservestoffen opslaan"],
+   ["Stengel","Transport van stoffen en stevigheid geven"],
+   ["Blad","Voedsel maken (fotosynthese)"],
+   ["Vatenstelsel","Transport van water, mineralen en glucose"]],e:"Zie de tabel in de basisstof: wortelstelsel = opnemen, vastzetten en opslaan; stengel = transport en stevigheid; blad = voedsel maken; vatenstelsel = transport."},
+ {t:"match",q:"Koppel elk begrip van het blad aan de juiste betekenis.",pairs:[
+   ["Bladsteel","Deel waarmee het blad vastzit aan de stengel"],
+   ["Bladschijf","Het platte gedeelte van het blad"],
+   ["Nerven","Hoofdnerf en zijnerven; geven stevigheid en zorgen voor transport"],
+   ["Bladmoes","Alles tussen de nerven"]],e:"Uit de begrippenlijst: bladsteel, bladschijf, nerven en bladmoes."},
+ {t:"match",q:"Koppel elk begrip van de wortel aan de juiste betekenis.",pairs:[
+   ["Hoofdwortel","Lange, dikke wortel waar de zijwortels aan zitten"],
+   ["Zijwortels","Aftakkingen van de hoofdwortel"],
+   ["Wortelharen","Zitten aan de uiteinden van de zijwortels; nemen water met mineralen op"],
+   ["Wortelstelsel","Alle wortels van een plant samen"]],e:"Uit de begrippenlijst over wortels."},
+ {t:"match",q:"Stengelproef met de anjer: koppel elke waarneming of vraag aan het juiste antwoord.",pairs:[
+   ["De bloem na enkele dagen","Rood gekleurd"],
+   ["Het water in de buis met bloem","Is gezakt"],
+   ["Waarvoor is de buis zonder bloem?","Controle: het water verdampt niet uit de buis"],
+   ["Conclusie van de proef","Stengels vervoeren water met opgeloste stoffen"]],e:"De bloem werd rood, het waterniveau zakte, de buis zonder bloem was de controle, en de conclusie is dat stengels water met opgeloste stoffen vervoeren."}
 ];
-const qs=document.getElementById('qs'),res=document.getElementById('res'),chk=document.getElementById('chk');
-let cur=[],done=false;
-const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+
+// Hoeveel vragen per type in een toets (samen 18)
+var QUOTA = {mc:7, fill:5, tf:4, match:2};
+var TAGS = {mc:"Meerkeuze", fill:"Invullen", tf:"Waar of onwaar", match:"Koppelen"};
+
+/* ---------- Hulpfuncties ---------- */
+function shuffle(arr){
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function norm(s){
+  return String(s).toLowerCase().trim().replace(/\s+/g," ").replace(/[.!]+$/,"");
+}
+
+/* ---------- Toets opbouwen ---------- */
+var test = [];
+var checked = false;
+
 function build(){
- done=false;res.classList.add('hide');chk.disabled=false;qs.innerHTML='';
- cur=sh(BANK).slice(0,N).map(b=>{
-  if(b[0]==='mc'){const o=sh(b[2].map((t,i)=>({t,g:i===b[3]})));return{k:'mc',q:b[1],o,e:b[4],s:-1}}
-  return{k:'op',q:b[1],a:b[2].map(norm),m:b[3],e:b[4],v:''}});
- cur.forEach((c,i)=>{
-  const d=document.createElement('div');d.className='q';
-  const h=document.createElement('h2');h.innerHTML='<span>'+(i+1)+'/'+N+'.</span> ';h.append(c.q);d.append(h);
-  if(c.k==='mc')c.o.forEach((o,j)=>{const b=document.createElement('button');b.className='opt';b.textContent=o.t;
-   b.onclick=()=>{if(done)return;c.s=j;[...d.querySelectorAll('.opt')].forEach((x,n)=>x.classList.toggle('sel',n===j))};d.append(b)});
-  else{const t=document.createElement('input');t.type='text';t.placeholder='Jouw antwoord';t.autocomplete='off';t.oninput=()=>c.v=t.value;t.disabled=false;d.append(t)}
-  const f=document.createElement('div');d.append(f);c.d=d;c.f=f;qs.append(d)});
- window.scrollTo(0,0);
+  var types = ["mc","fill","tf","match"];
+  var picked = [];
+  types.forEach(function(type){
+    var items = POOL.filter(function(p){ return p.t === type; });
+    picked = picked.concat(shuffle(items).slice(0, QUOTA[type]));
+  });
+  picked = shuffle(picked);
+  return picked.map(function(p){
+    var q = {t:p.t, q:p.q, e:p.e, a:p.a};
+    if (p.t === "mc") {
+      q.opts = shuffle(p.o.map(function(text, i){ return {text:text, ok:i === 0}; }));
+    } else if (p.t === "match") {
+      q.rows = shuffle(p.pairs);
+      q.rights = shuffle(p.pairs.map(function(r){ return r[1]; }));
+    }
+    return q;
+  });
 }
-function check(){
- if(done)return;done=true;chk.disabled=true;let sc=0;
- cur.forEach(c=>{let ok=false,ans='';
-  if(c.k==='mc'){ok=c.s>=0&&c.o[c.s].g;ans=c.o.find(o=>o.g).t;
-   [...c.d.querySelectorAll('.opt')].forEach((x,n)=>{x.disabled=true;x.classList.remove('sel');if(c.o[n].g)x.classList.add('good');else if(n===c.s)x.classList.add('bad')})}
-  else{const v=norm(c.v);ok=v&&c.a.some(a=>v===a||(' '+v+' ').includes(' '+a+' '));ans=c.m;c.d.querySelector('input').disabled=true}
-  if(ok)sc++;
-  c.f.className='fb '+(ok?'ok':'no');
-  c.f.innerHTML='<b>'+(ok?'Goed!':'Fout. Goed antwoord: '+ans)+'</b>';c.f.append(c.e)});
- res.classList.remove('hide');
- const p=sc/N;res.textContent='Score: '+sc+' van '+N+' - '+(p>=.8?'Top!':p>=.55?'Voldoende, oefen de foute nog even.':'Nog even leren en probeer opnieuw.');
- res.scrollIntoView({behavior:'smooth',block:'center'});
+
+function render(){
+  checked = false;
+  var quiz = document.getElementById("quiz");
+  var html = "";
+  test.forEach(function(q, i){
+    html += '<section class="card" id="c' + i + '">';
+    html += '<div class="qhead"><span class="num">Vraag ' + (i + 1) + '</span><span class="tag">' + TAGS[q.t] + '</span><span class="mark" id="m' + i + '"></span></div>';
+    html += '<p class="q">' + esc(q.q) + '</p>';
+    if (q.t === "mc") {
+      q.opts.forEach(function(o, k){
+        html += '<label class="opt"><input type="radio" name="q' + i + '" value="' + k + '"><span>' + esc(o.text) + '</span></label>';
+      });
+    } else if (q.t === "tf") {
+      html += '<label class="opt"><input type="radio" name="q' + i + '" value="true"><span>Waar</span></label>';
+      html += '<label class="opt"><input type="radio" name="q' + i + '" value="false"><span>Onwaar</span></label>';
+    } else if (q.t === "fill") {
+      html += '<input type="text" id="f' + i + '" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Typ je antwoord" aria-label="Antwoord vraag ' + (i + 1) + '">';
+    } else if (q.t === "match") {
+      html += '<table><tbody>';
+      q.rows.forEach(function(r, k){
+        html += '<tr><td>' + esc(r[0]) + '</td><td><select id="s' + i + '_' + k + '" aria-label="' + esc(r[0]) + '"><option value="">Kies...</option>';
+        q.rights.forEach(function(opt){
+          html += '<option value="' + esc(opt) + '">' + esc(opt) + '</option>';
+        });
+        html += '</select></td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '<div class="fb" id="fb' + i + '" hidden></div>';
+    html += '</section>';
+  });
+  quiz.innerHTML = html;
+  document.getElementById("count").textContent = test.length;
+  var sc = document.getElementById("score");
+  sc.style.display = "none";
+  sc.textContent = "";
 }
-chk.onclick=check;document.getElementById('new').onclick=build;
-const th=document.getElementById('th'),root=document.documentElement;
-function setT(t){root.dataset.theme=t;th.textContent=t==='dark'?'Licht':'Donker'}
-setT(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
-th.onclick=()=>{const t=root.dataset.theme==='dark'?'light':'dark';setT(t);try{localStorage.setItem('theme',t)}catch(e){}};
-build();
+
+/* ---------- Nakijken ---------- */
+function checkAll(){
+  var score = 0;
+  test.forEach(function(q, i){
+    var ok = false, fb = "";
+    var card = document.getElementById("c" + i);
+    if (q.t === "mc") {
+      var sel = document.querySelector('input[name="q' + i + '"]:checked');
+      ok = !!sel && q.opts[+sel.value].ok;
+      var right = q.opts.filter(function(o){ return o.ok; })[0].text;
+      fb = (ok ? "" : "Juiste antwoord: " + right + ". ") + q.e;
+    } else if (q.t === "tf") {
+      var s2 = document.querySelector('input[name="q' + i + '"]:checked');
+      ok = !!s2 && (s2.value === "true") === q.a;
+      fb = (ok ? "" : "Juiste antwoord: " + (q.a ? "waar" : "onwaar") + ". ") + q.e;
+    } else if (q.t === "fill") {
+      var val = norm(document.getElementById("f" + i).value);
+      var accepted = q.a.map(norm);
+      ok = accepted.indexOf(val) !== -1;
+      fb = (ok ? "" : "Juiste antwoord: " + q.a[0] + ". ") + q.e;
+    } else if (q.t === "match") {
+      var all = true, wrong = [];
+      q.rows.forEach(function(r, k){
+        var v = document.getElementById("s" + i + "_" + k).value;
+        if (v !== r[1]) { all = false; wrong.push(r[0] + " = " + r[1]); }
+      });
+      ok = all;
+      fb = (ok ? "" : "Juiste koppelingen: " + q.rows.map(function(r){ return r[0] + " = " + r[1]; }).join("; ") + ". ") + q.e;
+    }
+    if (ok) score++;
+    card.className = "card " + (ok ? "ok" : "bad");
+    document.getElementById("m" + i).textContent = ok ? "Goed" : "Fout";
+    var box = document.getElementById("fb" + i);
+    box.hidden = false;
+    box.innerHTML = "<b>" + (ok ? "Goed!" : "Niet goed.") + "</b>" + esc(fb);
+  });
+  checked = true;
+  var sc = document.getElementById("score");
+  var pct = Math.round(score / test.length * 100);
+  var msg = pct >= 75 ? "Goed gedaan!" : (pct >= 55 ? "Bijna: oefen de foute vragen nog even." : "Lees de basisstof nog eens door en probeer het opnieuw.");
+  sc.textContent = "Score: " + score + " van " + test.length + " (" + pct + "%). " + msg;
+  sc.style.display = "block";
+  sc.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+/* ---------- Knoppen ---------- */
+function newTest(){ test = build(); render(); window.scrollTo(0, 0); }
+function resetTest(){ render(); window.scrollTo(0, 0); }
+
+document.getElementById("checkBtn").addEventListener("click", checkAll);
+document.getElementById("checkBtn2").addEventListener("click", checkAll);
+document.getElementById("resetBtn").addEventListener("click", resetTest);
+document.getElementById("newBtn").addEventListener("click", newTest);
+
+/* ---------- Licht / donker ---------- */
+var mq = window.matchMedia("(prefers-color-scheme: dark)");
+var root = document.documentElement;
+var themeBtn = document.getElementById("themeBtn");
+function isDark(){
+  var t = root.getAttribute("data-theme");
+  return t ? t === "dark" : mq.matches;
+}
+function updateBtn(){ themeBtn.textContent = isDark() ? "Licht" : "Donker"; }
+themeBtn.addEventListener("click", function(){
+  root.setAttribute("data-theme", isDark() ? "light" : "dark");
+  updateBtn();
+});
+if (mq.addEventListener) { mq.addEventListener("change", function(){ if (!root.getAttribute("data-theme")) updateBtn(); }); }
+updateBtn();
+
+newTest();
+})();
 </script>
 </body>
 </html>
