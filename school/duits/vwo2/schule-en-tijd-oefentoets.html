@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duits oefentoets – Schule en tijd</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#1d2433;--muted:#5b6578;--accent:#2f6fed;--accent-t:#fff;--ok:#1b8a4b;--okbg:#e3f6ea;--bad:#c4372c;--badbg:#fde8e6;--line:#d5dbe8}
+:root[data-theme=dark]{--bg:#12151c;--card:#1c212c;--text:#eaeef7;--muted:#9aa5bb;--accent:#6b9bff;--accent-t:#0b1220;--ok:#5fd18b;--okbg:#17301f;--bad:#ff8a7e;--badbg:#38201e;--line:#323a4c}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:18px}
+main{max-width:640px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+h1{font-size:1.4rem;margin:.4rem 0}
+button{font:inherit;cursor:pointer;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--text);min-height:48px;padding:10px 16px}
+button.primary{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:600}
+button:disabled{opacity:.6;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:10px}
+.bar div{height:100%;background:var(--accent);transition:width .3s}
+.small{color:var(--muted);font-size:.9rem}
+.q{font-size:1.2rem;font-weight:600;margin:.4rem 0 1rem}
+.opts{display:grid;gap:10px}
+.opts button{text-align:left;width:100%}
+.opts button.right{border-color:var(--ok);background:var(--okbg)}
+.opts button.wrong{border-color:var(--bad);background:var(--badbg)}
+input[type=text]{font:inherit;width:100%;min-height:52px;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--text)}
+input[type=text]:focus{outline:none;border-color:var(--accent)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}
+.fb.ok{background:var(--okbg);color:var(--ok)}
+.fb.no{background:var(--badbg);color:var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.row button{flex:1 1 140px}
+.score{font-size:2.4rem;font-weight:800;text-align:center;margin:.2rem 0}
+ul.rev{list-style:none;padding:0;margin:0}
+ul.rev li{padding:10px 0;border-top:1px solid var(--line)}
+.tag{font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Duits oefentoets: school en tijd</h1>
+<button id="theme" aria-label="Wissel tussen licht en donker" title="Licht / donker">Licht / donker</button>
+</header>
+<p class="small">10 vragen, elke keer anders. Je ziet meteen of je antwoord goed is. Bij woorden intypen maken hoofdletters niet uit, en ä mag je ook als ae typen.</p>
+<div id="app"></div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement, saved=null;
+  try{saved=localStorage.getItem('theme')}catch(e){}
+  function sys(){return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  root.setAttribute('data-theme',saved||sys());
+  document.getElementById('theme').onclick=function(){
+    var n=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}
+  };
+})();
+
+function T(q,a,o){return Object.assign({type:'t',q:q,a:[].concat(a)},o||{})}
+function M(q,opts,ans,why){return {type:'m',q:q,opts:opts,ans:ans,why:why||''}}
+var ART=['der','die','das'];
+function A(word,art,why){return M('Welk lidwoord hoort bij: ___ '+word+'?',ART,art,why)}
+
+var BANK=[
+// Duits naar Nederlands
+T('Wat betekent: müde',['moe']),
+T('Wat betekent: pünktlich',['stipt','op tijd']),
+T('Wat betekent: anstrengend',['vermoeiend']),
+T('Wat betekent: denn',['want']),
+T('Wat betekent: anfangen',['beginnen']),
+T('Wat betekent: später',['later']),
+T('Wat betekent: der Klassenlehrer',['mentor']),
+T('Wat betekent: das Referat',['spreekbeurt']),
+T('Wat betekent: kaum',['nauwelijks']),
+T('Wat betekent: Lust haben',['zin hebben']),
+T('Wat betekent: die Note',['cijfer']),
+T('Wat betekent: sich treffen',['afspreken']),
+T('Wat betekent: schwierig',['moeilijk']),
+T('Wat betekent: freihaben',['vrij hebben']),
+T('Wat betekent: die Hausaufgaben',['huiswerk']),
+T('Wat betekent: zum Glück',['gelukkig']),
+// Nederlands naar Duits
+T('Hoe zeg je in het Duits: gisteren',['gestern']),
+T('Hoe zeg je in het Duits: vandaag',['heute']),
+T('Hoe zeg je in het Duits: het schrift',['Heft']),
+T('Hoe zeg je in het Duits: de pauze',['Pause']),
+T('Hoe zeg je in het Duits: natuurkunde',['Physik']),
+T('Hoe zeg je in het Duits: aardrijkskunde',['Erdkunde']),
+T('Hoe zeg je in het Duits: scheikunde',['Chemie']),
+T('Hoe zeg je in het Duits: elke dag',['jeden Tag']),
+T('Hoe zeg je in het Duits: de les / het onderwijs',['Unterricht']),
+T('Hoe zeg je in het Duits: makkelijk (een van de twee woorden is goed)',['leicht','einfach']),
+T('Hoe zeg je in het Duits: volgende week',['nächste Woche']),
+T('Hoe zeg je in het Duits: op woensdag',['am Mittwoch']),
+T('Hoe zeg je in het Duits: op zaterdag',['am Samstag']),
+T('Hoe zeg je in het Duits: de derde (de derde les)',['dritte']),
+T('Hoe zeg je in het Duits: de zevende',['siebte']),
+T('Hoe zeg je in het Duits: de achtste',['achte']),
+T('Hoe zeg je in het Duits: in het weekend',['am Wochenende']),
+T('Hoe zeg je in het Duits: de toets (het proefwerk)',['Test']),
+// Lidwoorden
+A('Schule','die','Schule eindigt op -e, dus meestal die.'),
+A('Lehrer','der','Een mannelijke persoon: der Lehrer.'),
+A('Buch','das','Het boek is een het-woord, dus das Buch.'),
+A('Klasse','die','Woorden op -e zijn vaak die.'),
+A('Gymnasium','das','Het gymnasium is een het-woord, dus das Gymnasium.'),
+A('Freundschaft','die','Woorden op -schaft zijn altijd die.'),
+A('Zeitung','die','Woorden op -ung zijn altijd die.'),
+A('Möglichkeit','die','Woorden op -keit zijn altijd die.'),
+A('Heft','das','Het schrift is een het-woord: das Heft.'),
+A('Test','der','Het is der Test.'),
+A('Stundenplan','der','Het is der Stundenplan.'),
+A('Realschule','die','Het is die Realschule.'),
+// Meervoud
+T('Wat is het meervoud van: das Buch? (die ...)',['Bücher'],{pl:1}),
+T('Wat is het meervoud van: das Heft? (die ...)',['Hefte'],{pl:1}),
+T('Wat is het meervoud van: die Schule? (die ...)',['Schulen'],{pl:1}),
+T('Wat is het meervoud van: der Test? (die ...)',['Tests'],{pl:1}),
+T('Wat is het meervoud van: der Lehrer? (die ...)',['Lehrer'],{pl:1}),
+T('Wat is het meervoud van: die Pause? (die ...)',['Pausen'],{pl:1}),
+T('Wat is het meervoud van: das Haus? (die ...)',['Häuser'],{pl:1}),
+T('Wat is het meervoud van: das Handy? (die ...)',['Handys'],{pl:1}),
+T('Wat is het meervoud van: der Ball? (die ...)',['Bälle'],{pl:1}),
+T('Wat is het meervoud van: die Stunde? (die ...)',['Stunden'],{pl:1}),
+T('Wat is het meervoud van: die Klassenarbeit? (die ...)',['Klassenarbeiten'],{pl:1}),
+T('Wat is het meervoud van: die Prüfung? (die ...)',['Prüfungen'],{pl:1}),
+// Tijd
+M('Hoe laat is het: "um ein Uhr"?',['om één uur','om half twee','om kwart over één','om kwart voor twee'],'om één uur'),
+M('Hoe laat is het: "Viertel nach eins"?',['kwart over één','half twee','kwart voor twee','kwart over twee'],'kwart over één'),
+M('Hoe laat is het: "halb zwei"?',['half twee','half drie','kwart voor twee','twee uur'],'half twee','Halb zwei is net als in het Nederlands half twee (1:30).'),
+M('Hoe laat is het: "Viertel vor zwei"?',['kwart voor twee','kwart over twee','kwart over één','half twee'],'kwart voor twee'),
+M('Hoe zeg je in het Duits: "om half twee"?',['um halb zwei','um Viertel nach eins','um Viertel vor zwei','um zwei Uhr'],'um halb zwei'),
+M('Hoe zeg je in het Duits: "kwart over één"?',['Viertel nach eins','Viertel vor eins','halb zwei','Viertel nach zwei'],'Viertel nach eins'),
+M('Hoe zeg je in het Duits: "kwart voor twee"?',['Viertel vor zwei','Viertel nach zwei','Viertel vor eins','halb zwei'],'Viertel vor zwei'),
+M('Hoe zeg je in het Duits: "om één uur"?',['um ein Uhr','um eins Uhr','am ein Uhr','um einen Uhr'],'um ein Uhr'),
+M('Wat betekent: "nachmittags"?',['\'s middags','\'s morgens','\'s avonds','\'s nachts'],'\'s middags'),
+// Zinnen
+T('Vul in: Auf welche Schule ___ du?',['gehst']),
+T('Vul in: Ich ___ auf die Realschule.',['gehe']),
+T('Vul in: ___ Dienstag in der zweiten Stunde haben wir Kunst.',['Am']),
+T('Vul in: Wie ___ du Mathe?',['findest']),
+T('Vul in: Um acht Uhr ___ wir Deutsch.',['haben']),
+T('Vul in: Meistens habe ich ___ zwei Uhr Unterricht.',['bis']),
+T('Vul in: In der dritten Stunde ___ ich Sport.',['habe']),
+T('Vul in: Wann ___ du Kunst?',['hast']),
+T('Vul in: Ich gehe in die achte ___.',['Klasse']),
+T('Vul in: Mathe ___ ich leicht und toll.',['finde']),
+M('Kies de goede vertaling: "Op welke school zit je?"',['Auf welche Schule gehst du?','In welche Klasse gehst du?','Wann hast du Schule?','Wie findest du die Schule?'],'Auf welche Schule gehst du?'),
+M('Kies de goede vertaling: "Hoe vind je wiskunde?"',['Wie findest du Mathe?','Wann hast du Mathe?','Wie sieht Mathe aus?','Wo hast du Mathe?'],'Wie findest du Mathe?'),
+M('Kies de goede vertaling: "Op dinsdag het tweede uur hebben we tekenen."',['Am Dienstag in der zweiten Stunde haben wir Kunst.','Am Montag in der zweiten Stunde haben wir Sport.','Um zwei Uhr haben wir Kunst.','Am Dienstag in der dritten Stunde schreiben wir einen Test.'],'Am Dienstag in der zweiten Stunde haben wir Kunst.'),
+M('Kies de goede vertaling: "Frans vind ik moeilijk."',['Französisch finde ich schwierig.','Französisch habe ich schwierig.','Französisch bin ich schwierig.','Französisch finde ich leicht.'],'Französisch finde ich schwierig.'),
+M('Kies de goede vertaling: "Ik zit in de tweede klas."',['Ich gehe in die zweite Klasse.','Ich gehe auf die zweite Klasse.','Ich habe die zweite Klasse.','Ich bin zweite Klasse.'],'Ich gehe in die zweite Klasse.'),
+M('Kies de goede vertaling: "Meestal heb ik tot twee uur les."',['Meistens habe ich bis zwei Uhr Unterricht.','Meistens bin ich um zwei Uhr Unterricht.','Morgens habe ich zwei Uhr Unterricht.','Meistens habe ich ab zwei Uhr Test.'],'Meistens habe ich bis zwei Uhr Unterricht.'),
+M('Wat betekent: "Hast du Lust, mit mir unseren Hund auszuführen?"',['Heb je zin om met mij onze hond uit te laten?','Heb je tijd voor de hond?','Ga je met mij naar school?','Vind je mijn hond leuk?'],'Heb je zin om met mij onze hond uit te laten?'),
+// Grammatica
+M('Woorden die eindigen op -heit, -keit, -schaft of -ung zijn:',['der','die','das','verschilt per woord'],'die'),
+M('Welk lidwoord hoort bij het meervoud?',['altijd die','der','das','hetzelfde als in het enkelvoud'],'altijd die','In het meervoud is het lidwoord altijd die.'),
+M('Mannelijke woorden maken het meervoud meestal met:',['umlaut + e (der Ball, die Bälle)','+ (e)n','+ s','niets, ze blijven gelijk'],'umlaut + e (der Ball, die Bälle)'),
+M('Vrouwelijke woorden maken het meervoud meestal met:',['+ (e)n (die Straße, die Straßen)','umlaut + e','+ s','niets, ze blijven gelijk'],'+ (e)n (die Straße, die Straßen)'),
+M('Onzijdige woorden maken het meervoud vaak met:',['+ e (das Heft, die Hefte)','+ (e)n','+ s','umlaut + (e)n'],'+ e (das Heft, die Hefte)'),
+M('Mannelijke en onzijdige woorden op -el, -en, -er blijven in het meervoud meestal:',['hetzelfde (der Lehrer, die Lehrer)','+ s','+ (e)n','+ e'],'hetzelfde (der Lehrer, die Lehrer)'),
+M('Veel woorden op -a, -i, -o, -y krijgen in het meervoud:',['+ s (das Handy, die Handys)','+ e','+ (e)n','niets'],'+ s (das Handy, die Handys)'),
+M('Bij een woord met "au" komt de umlaut op:',['de a (Haus, Häuser)','de u','geen van beide','de hele combinatie'],'de a (Haus, Häuser)')
+];
+
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function norm(s){
+  s=String(s).toLowerCase().trim().replace(/[’‘`´]/g,"'").replace(/\s+/g,' ');
+  s=s.replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');
+  return s.replace(/[.!?,;:]+$/,'').trim();
+}
+function stripArt(s){return s.replace(/^(der|die|das|de|het|een|ein|eine)\s+/,'')}
+function isRight(q,input){
+  var x=norm(input);if(!x)return false;
+  return q.a.some(function(a){var n=norm(a);return x===n||stripArt(x)===stripArt(n)});
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+var app=document.getElementById('app');
+var qs,idx,score,results,answered;
+
+function start(fresh){
+  if(fresh||!qs)qs=shuffle(BANK).slice(0,10).map(function(q){
+    return q.type==='m'?Object.assign({},q,{opts:shuffle(q.opts)}):q;
+  });
+  idx=0;score=0;results=[];answered=false;render();
+}
+function render(){
+  if(idx>=qs.length)return finish();
+  var q=qs[idx];answered=false;
+  var h='<div class="card"><div class="small">Vraag '+(idx+1)+' van '+qs.length+'</div>'
+   +'<div class="bar"><div style="width:'+(idx/qs.length*100)+'%"></div></div>'
+   +'<p class="q">'+esc(q.q)+'</p>';
+  if(q.type==='m'){
+    h+='<div class="opts" id="opts">'+q.opts.map(function(o,i){return '<button data-i="'+i+'">'+esc(o)+'</button>'}).join('')+'</div>';
+  }else{
+    h+='<input type="text" id="inp" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Typ je antwoord" aria-label="Je antwoord">';
+    if(q.pl)h+='<p class="small">Typ alleen het meervoudswoord, zonder "die".</p>';
+    h+='<div class="row"><button class="primary" id="check">Controleer</button></div>';
+  }
+  h+='<div id="fb"></div><div class="row" id="nx" style="display:none"><button class="primary" id="next">'+(idx===qs.length-1?'Bekijk je score':'Volgende')+'</button></div></div>';
+  app.innerHTML=h;
+  if(q.type==='m'){
+    var bs=app.querySelectorAll('#opts button');
+    bs.forEach(function(b){b.onclick=function(){if(answered)return;answer(q,q.opts[+b.dataset.i],b,bs)}});
+  }else{
+    var inp=document.getElementById('inp');inp.focus();
+    var go=function(){if(answered)return;if(!inp.value.trim()){inp.focus();return}inp.disabled=true;answer(q,inp.value)};
+    document.getElementById('check').onclick=go;
+    inp.onkeydown=function(e){if(e.key==='Enter')go()};
+  }
+}
+function answer(q,given,btn,bs){
+  answered=true;var ok,shown;
+  if(q.type==='m'){
+    ok=given===q.ans;shown=q.ans;
+    bs.forEach(function(b){b.disabled=true;if(q.opts[+b.dataset.i]===q.ans)b.classList.add('right')});
+    if(!ok)btn.classList.add('wrong');
+  }else{
+    ok=isRight(q,given);shown=q.a.join(' / ');
+    document.getElementById('check').disabled=true;
+  }
+  if(ok)score++;
+  results.push({q:q.q,ok:ok,given:given,shown:shown});
+  var why=q.why?' '+esc(q.why):'';
+  document.getElementById('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'">'+(ok?'Goed zo! <b>'+esc(shown)+'</b>.'+why:'Net niet. Het goede antwoord is: <b>'+esc(shown)+'</b>.'+why)+'</div>';
+  document.getElementById('nx').style.display='flex';
+  var n=document.getElementById('next');n.onclick=function(){idx++;render();window.scrollTo(0,0)};n.focus();
+}
+function finish(){
+  var msg=score>=9?'Top, je kent dit goed!':score>=7?'Mooi gedaan, bijna alles goed.':score>=5?'Een prima begin, nog even oefenen.':'Nog even oefenen en dan lukt het zeker.';
+  var h='<div class="card"><p class="score">'+score+' / '+qs.length+'</p><p style="text-align:center">'+msg+'</p>';
+  var wrong=results.filter(function(r){return !r.ok});
+  if(wrong.length){
+    h+='<h2 style="font-size:1.1rem">Dit ging nog niet goed</h2><ul class="rev">'+wrong.map(function(r){
+      return '<li>'+esc(r.q)+'<br><span class="tag">Jij:</span> '+esc(r.given)+'<br><span class="tag">Goed:</span> <b>'+esc(r.shown)+'</b></li>'}).join('')+'</ul>';
+  }else h+='<p style="text-align:center">Alles goed!</p>';
+  h+='<div class="row"><button class="primary" id="newq">Nieuwe vragen</button><button id="again">Opnieuw (dezelfde vragen)</button></div></div>';
+  app.innerHTML=h;
+  document.getElementById('newq').onclick=function(){start(true)};
+  document.getElementById('again').onclick=function(){start(false)};
+  window.scrollTo(0,0);
+}
+start(true);
+</script>
+</body>
+</html>
