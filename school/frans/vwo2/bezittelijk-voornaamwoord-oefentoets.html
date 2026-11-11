@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bezittelijk voornaamwoord – Frans oefentoets</title>
+<style>
+:root{--bg:#f5f6fa;--card:#fff;--text:#1d2433;--muted:#5b6478;--border:#d5d9e4;--accent:#2457d6;--accent-text:#fff;--ok:#12703a;--ok-bg:#e1f5e8;--bad:#b3261e;--bad-bg:#fdeaea;--sel:#e6edff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#1a2132;--text:#e8ecf5;--muted:#a3adc4;--border:#33405c;--accent:#6c9bff;--accent-text:#0b1226;--ok:#6fdc9a;--ok-bg:#12301f;--bad:#ff8a80;--bad-bg:#3a1a1a;--sel:#26365e}}
+:root[data-theme="dark"]{--bg:#0f1420;--card:#1a2132;--text:#e8ecf5;--muted:#a3adc4;--border:#33405c;--accent:#6c9bff;--accent-text:#0b1226;--ok:#6fdc9a;--ok-bg:#12301f;--bad:#ff8a80;--bad-bg:#3a1a1a;--sel:#26365e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+h1{font-size:1.5rem;margin:.2em 0}
+.sub{color:var(--muted);margin:0 0 .5em}
+button{font:inherit;min-height:48px;padding:10px 18px;border-radius:12px;border:2px solid var(--accent);background:var(--card);color:var(--text);cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-text);font-weight:600}
+button:focus-visible,input:focus-visible,label:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+details{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin:12px 0}
+summary{cursor:pointer;font-weight:600;min-height:32px}
+table{border-collapse:collapse;width:100%;margin-top:10px;font-size:.95rem}
+th,td{border:1px solid var(--border);padding:6px 8px;text-align:left}
+th{background:var(--sel)}
+.tbl{overflow-x:auto}
+.note{color:var(--muted);font-size:.92rem}
+.q{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:14px;margin:14px 0}
+.q.ok{border-color:var(--ok)}.q.bad{border-color:var(--bad)}
+.qh{display:flex;justify-content:space-between;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:4px}
+.prompt{font-size:1.15rem;font-weight:600;margin:4px 0 10px}
+fieldset{border:0;margin:0;padding:0}
+.opt{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 14px;margin:8px 0;border:2px solid var(--border);border-radius:12px;cursor:pointer}
+.opt input{width:22px;height:22px;flex:none;accent-color:var(--accent)}
+.opt.picked{background:var(--sel);border-color:var(--accent)}
+.opt.right{background:var(--ok-bg);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+input[type=text]{width:100%;min-height:52px;font:inherit;padding:10px 14px;border-radius:12px;border:2px solid var(--border);background:var(--bg);color:var(--text)}
+.fb{margin-top:10px;padding:10px 12px;border-radius:10px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-bg);color:var(--ok)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb .why{color:var(--text);margin-top:4px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.actions button{flex:1 1 200px}
+#score{display:none;background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:14px;font-size:1.2rem;font-weight:600;text-align:center}
+#score.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div>
+<h1>Bezittelijk voornaamwoord – Frans oefentoets</h1>
+<p class="sub">Frans · VWO 2 · Unité 2 · Sports et passions · Apprendre 5 (paragraaf 2.1)</p>
+</div>
+<button id="themeBtn" type="button" aria-label="Wissel tussen licht en donker thema">Donker thema</button>
+</header>
+
+<details>
+<summary>Spiekbriefje: de vormen</summary>
+<div class="tbl"><table>
+<tr><th>Nederlands</th><th>mannelijk ev.</th><th>vrouwelijk ev.</th><th>vr. ev. + klinker / stomme h</th><th>meervoud</th></tr>
+<tr><td>mijn</td><td>mon frère</td><td>ma sœur</td><td>mon amie</td><td>mes parents</td></tr>
+<tr><td>jouw</td><td>ton frère</td><td>ta sœur</td><td>ton amie</td><td>tes parents</td></tr>
+<tr><td>zijn / haar</td><td>son frère</td><td>sa sœur</td><td>son amie</td><td>ses parents</td></tr>
+<tr><td>ons / onze</td><td>notre frère</td><td>notre sœur</td><td>notre amie</td><td>nos parents</td></tr>
+<tr><td>jullie / uw</td><td>votre frère</td><td>votre sœur</td><td>votre amie</td><td>vos parents</td></tr>
+<tr><td>hun</td><td>leur frère</td><td>leur sœur</td><td>leur amie</td><td>leurs parents</td></tr>
+</table></div>
+<p class="note">Let op: son, sa, ses betekenen zijn of haar; kijk naar de rest van de zin. De vorm hangt af van het woord erachter, niet van de bezitter.</p>
+</details>
+
+<p class="note">Beantwoord alle 10 vragen en klik op Controleer. Bij invulvragen maakt hoofdletter of accent niet uit (soeur = sœur). Onbeantwoorde vragen tellen als fout.</p>
+
+<form id="quiz" onsubmit="return false" autocomplete="off"></form>
+
+<div class="actions">
+<button id="checkBtn" class="primary" type="button">Controleer</button>
+<button id="newBtn" type="button">Nieuwe vragen</button>
+</div>
+<div id="score" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+// Vraagbank. mc: p = vraag, o = opties, a = juist antwoord. fill: p = vraag, a = lijst met goede antwoorden. e = uitleg. f = true als de vraagtekst Frans is.
+var BANK=[
+{t:"mc",f:1,p:"Voilà Adam avec ___ frère.",o:["son","sa","ses","mon"],a:"son",e:"Het woord erachter is frère (mannelijk enkelvoud), dus son. Voilà Adam avec son frère = Daar is Adam met zijn broer."},
+{t:"mc",f:1,p:"Voilà Lisa avec ___ frère.",o:["son","sa","ses","leur"],a:"son",e:"Ook bij Lisa gebruik je son: de vorm hangt af van frère (mannelijk), niet van de bezitter. Voilà Lisa avec son frère = Daar is Lisa met haar broer."},
+{t:"mc",f:1,p:"Voilà Lisa avec ___ sœur.",o:["sa","son","ses","notre"],a:"sa",e:"Sœur is vrouwelijk enkelvoud met een medeklinker aan het begin, dus sa (haar zus)."},
+{t:"mc",p:"Wat is de Franse vertaling van: mijn vriendin (une amie)?",o:["mon amie","ma amie","mes amie","son amie"],a:"mon amie",e:"Amie is vrouwelijk, maar begint met een klinker. Dan gebruik je mon/ton/son: mon amie."},
+{t:"mc",p:"Wat is de Franse vertaling van: jouw zus?",o:["ta sœur","ton sœur","tes sœur","te sœur"],a:"ta sœur",e:"Sœur is vrouwelijk enkelvoud met een medeklinker aan het begin: ta sœur."},
+{t:"mc",p:"Wat is de Franse vertaling van: zijn ouders?",o:["ses parents","son parents","sa parents","leurs parents"],a:"ses parents",e:"Parents is meervoud, dus ses (zijn of haar). Bij meervoud is geslacht niet van belang."},
+{t:"mc",p:"Wat is de Franse vertaling van: hun ouders?",o:["leurs parents","leur parents","leur parent","ses parents"],a:"leurs parents",e:"Hun voor een meervoud wordt leurs (met s). Voor een enkelvoud is het leur."},
+{t:"mc",p:"Wat is de Franse vertaling van: hun broer?",o:["leur frère","leurs frère","son frère","ses frère"],a:"leur frère",e:"Frère is enkelvoud, dus leur zonder s. Leur is hetzelfde voor mannelijk en vrouwelijk."},
+{t:"mc",p:"Wat is de Franse vertaling van: onze school (une école)?",o:["notre école","nos école","nôtre école","notre écoles"],a:"notre école",e:"Voor ons/onze met een enkelvoud gebruik je notre, ook voor een vrouwelijk woord met klinker."},
+{t:"mc",p:"Wat is de Franse vertaling van: uw/jullie vrienden (les amis)?",o:["vos amis","votre amis","vot amis","ses amis"],a:"vos amis",e:"Amis is meervoud, dus vos. Votre gebruik je alleen voor een enkelvoud."},
+{t:"mc",f:1,p:"Tu as ___ école près d'ici ? (jouw school)",o:["ton","ta","tes","son"],a:"ton",e:"École is vrouwelijk, maar begint met een klinker. Daarom ton in plaats van ta."},
+{t:"mc",p:"Wat betekent: Sa sœur est sportive.",o:["Zijn of haar zus is sportief","Alleen: zijn zus is sportief","Alleen: haar zus is sportief","Hun zus is sportief"],a:"Zijn of haar zus is sportief",e:"Sa kan zijn of haar betekenen. Je ziet dat aan de rest van de zin of de context."},
+{t:"mc",p:"Waarom zeg je son amie en niet sa amie?",o:["Amie is vrouwelijk en begint met een klinker","Amie is mannelijk","Amie is meervoud","De bezitter is een jongen"],a:"Amie is vrouwelijk en begint met een klinker",e:"Voor een vrouwelijk woord dat met een klinker of stomme h begint, gebruik je mon/ton/son."},
+{t:"mc",f:1,p:"J'aime bien ___ sœurs. (mijn zussen)",o:["mes","mon","ma","mas"],a:"mes",e:"Sœurs is meervoud: mes. Bij meervoud kijk je niet naar mannelijk of vrouwelijk."},
+{t:"mc",f:1,p:"Léa adore ___ équipe. (haar team)",o:["son","sa","ses","leur"],a:"son",e:"Équipe is vrouwelijk, maar begint met een klinker. Dus son équipe."},
+{t:"mc",f:1,p:"Paul et Marie aiment ___ prof.",o:["leur","leurs","son","ses"],a:"leur",e:"Twee bezitters (hun) en prof is enkelvoud: leur."},
+{t:"mc",f:1,p:"Nous aimons ___ ville.",o:["notre","nos","ma","votre"],a:"notre",e:"Nous hoort bij ons/onze en ville is enkelvoud: notre."},
+{t:"mc",f:1,p:"Vous aimez ___ sports ?",o:["vos","votre","vous","ses"],a:"vos",e:"Sports is meervoud, dus vos (jullie/uw)."},
+{t:"mc",f:1,p:"Tu as ___ ballon ?",o:["ton","ta","tes","son"],a:"ton",e:"Ballon is mannelijk enkelvoud, jij is tu: ton ballon."},
+{t:"mc",f:1,p:"Je cherche ___ chaussures. (mijn schoenen)",o:["mes","mon","ma","mais"],a:"mes",e:"Chaussures is meervoud: mes."},
+{t:"mc",f:1,p:"Pierre invite ___ amie Chloé.",o:["son","sa","ses","leur"],a:"son",e:"Amie is vrouwelijk met een klinker aan het begin: son amie."},
+{t:"mc",f:1,p:"Elles adorent ___ entraîneur.",o:["leur","leurs","son","ses"],a:"leur",e:"Elles is meervoud (hun) en entraîneur is enkelvoud: leur."},
+{t:"mc",p:"Welke zin is juist?",o:["Ton amie est sympa.","Ta amie est sympa.","Tes amie est sympa.","Te amie est sympa."],a:"Ton amie est sympa.",e:"Voor een vrouwelijk woord met een klinker (amie) gebruik je ton."},
+{t:"mc",p:"Welke zin is juist?",o:["Ma sœur joue au tennis.","Mon sœur joue au tennis.","Mes sœur joue au tennis.","Ma sœurs joue au tennis."],a:"Ma sœur joue au tennis.",e:"Sœur is vrouwelijk enkelvoud met een medeklinker: ma sœur."},
+{t:"fill",f:1,p:"Nous jouons avec ___ amis. (onze vrienden)",a:["nos"],e:"Amis is meervoud, dus nos."},
+{t:"fill",p:"Vertaal: mijn zus",a:["ma sœur"],e:"Sœur is vrouwelijk enkelvoud met een medeklinker: ma sœur."},
+{t:"fill",p:"Vertaal: zijn vriendin (une amie)",a:["son amie"],e:"Amie begint met een klinker: son amie."},
+{t:"fill",f:1,p:"J'adore ___ histoire. (mijn verhaal)",a:["mon"],e:"Histoire is vrouwelijk en begint met een stomme h, dus mon."},
+{t:"fill",f:1,p:"Vous avez ___ billets ? (uw kaartjes)",a:["vos"],e:"Billets is meervoud: vos."},
+{t:"fill",f:1,p:"Ils habitent avec ___ grand-mère. (hun grootmoeder)",a:["leur"],e:"Grand-mère is enkelvoud: leur."},
+{t:"fill",p:"Vertaal: jullie broer",a:["votre frère"],e:"Frère is enkelvoud, dus votre frère."},
+{t:"fill",f:1,p:"Elle présente ___ copains. (haar vrienden)",a:["ses"],e:"Copains is meervoud: ses (haar)."},
+{t:"fill",f:1,p:"Tu connais ___ cousine ? (jouw nicht)",a:["ta"],e:"Cousine is vrouwelijk enkelvoud met een medeklinker: ta."},
+{t:"fill",f:1,p:"Où est ___ cahier ? (ons schrift)",a:["notre"],e:"Cahier is enkelvoud: notre."},
+{t:"fill",f:1,p:"Léa adore ___ école. (haar school)",a:["son"],e:"École is vrouwelijk met een klinker: son."},
+{t:"fill",p:"Vertaal: onze ouders",a:["nos parents"],e:"Parents is meervoud: nos parents."},
+{t:"fill",p:"Vertaal: ons huis (la maison)",a:["notre maison"],e:"Ons/onze met een enkelvoud is notre: notre maison."},
+{t:"fill",p:"Vertaal: jouw ouders",a:["tes parents"],e:"Parents is meervoud: tes parents."},
+{t:"fill",p:"Vertaal: hun vriendin (une amie)",a:["leur amie"],e:"Leur blijft gelijk voor mannelijk en vrouwelijk enkelvoud: leur amie."}
+];
+var N=10;
+var quiz=document.getElementById("quiz"),checkBtn=document.getElementById("checkBtn"),newBtn=document.getElementById("newBtn"),scoreEl=document.getElementById("score"),themeBtn=document.getElementById("themeBtn");
+var current=[],checked=false;
+
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function norm(s){return s.toLowerCase().replace(/œ/g,"oe").replace(/æ/g,"ae").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[’']/g," ").replace(/\s+/g," ").trim();}
+function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+
+function build(){
+  checked=false;quiz.innerHTML="";scoreEl.className="";scoreEl.textContent="";checkBtn.disabled=false;
+  current=shuffle(BANK).slice(0,N);
+  current.forEach(function(q,i){
+    var card=el("div","q");card.id="q"+i;
+    var h=el("div","qh");h.appendChild(el("span","","Vraag "+(i+1)+" van "+N));h.appendChild(el("span","",q.t==="mc"?"Meerkeuze":"Invullen"));card.appendChild(h);
+    var fs=el("fieldset");var lg=el("legend","prompt",q.p);if(q.f)lg.lang="fr";fs.appendChild(lg);
+    if(q.t==="mc"){
+      q._opts=shuffle(q.o);
+      q._opts.forEach(function(o){
+        var l=el("label","opt");var r=document.createElement("input");r.type="radio";r.name="r"+i;r.value=o;
+        r.addEventListener("change",function(){var all=fs.querySelectorAll(".opt");for(var z=0;z<all.length;z++)all[z].classList.remove("picked");l.classList.add("picked");});
+        l.appendChild(r);l.appendChild(el("span","",o));fs.appendChild(l);
+      });
+    }else{
+      var inp=document.createElement("input");inp.type="text";inp.id="f"+i;inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.setAttribute("spellcheck","false");inp.setAttribute("aria-label","Jouw antwoord bij vraag "+(i+1));inp.placeholder="Typ je antwoord";fs.appendChild(inp);
+    }
+    card.appendChild(fs);
+    var fb=el("div","fb");fb.id="fb"+i;fb.setAttribute("aria-live","polite");card.appendChild(fb);
+    quiz.appendChild(card);
+  });
+  window.scrollTo(0,0);
+}
+
+function getAnswer(q,i){
+  if(q.t==="mc"){var r=quiz.querySelector('input[name="r'+i+'"]:checked');return r?r.value:"";}
+  return document.getElementById("f"+i).value;
+}
+
+function check(){
+  if(checked)return;checked=true;var score=0;
+  current.forEach(function(q,i){
+    var ans=getAnswer(q,i),good=false,shown;
+    if(q.t==="mc"){good=ans===q.a;shown=q.a;}
+    else{good=q.a.some(function(x){return norm(x)===norm(ans);});shown=q.a[0];}
+    if(good)score++;
+    var card=document.getElementById("q"+i);card.classList.add(good?"ok":"bad");
+    var fb=document.getElementById("fb"+i);fb.className="fb show "+(good?"ok":"bad");fb.innerHTML="";
+    fb.appendChild(el("strong","",good?"Goed!":(ans?"Fout.":"Niet beantwoord.")+" Juist antwoord: "+shown));
+    fb.appendChild(el("div","why",q.e));
+    if(q.t==="mc"){
+      var labels=card.querySelectorAll(".opt");
+      for(var k=0;k<labels.length;k++){var inp=labels[k].querySelector("input");inp.disabled=true;
+        if(inp.value===q.a)labels[k].classList.add("right");else if(inp.checked)labels[k].classList.add("wrong");}
+    }else{document.getElementById("f"+i).disabled=true;}
+  });
+  var msg=score>=9?"Uitstekend!":score>=7?"Goed gedaan!":score>=6?"Voldoende, maar blijf oefenen.":"Bekijk het spiekbriefje en probeer het nog eens.";
+  scoreEl.textContent="Score: "+score+" van "+N+" – "+msg;scoreEl.className="show";
+  checkBtn.disabled=true;
+  scoreEl.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function currentTheme(){var t=document.documentElement.getAttribute("data-theme");if(t)return t;return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}
+function updateThemeBtn(){themeBtn.textContent=currentTheme()==="dark"?"Licht thema":"Donker thema";}
+themeBtn.addEventListener("click",function(){var n=currentTheme()==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("frans-theme",n);}catch(e){}updateThemeBtn();});
+try{var saved=localStorage.getItem("frans-theme");if(saved==="light"||saved==="dark")document.documentElement.setAttribute("data-theme",saved);}catch(e){}
+if(window.matchMedia){var mq=window.matchMedia("(prefers-color-scheme: dark)");if(mq.addEventListener)mq.addEventListener("change",updateThemeBtn);}
+updateThemeBtn();
+
+checkBtn.addEventListener("click",check);
+newBtn.addEventListener("click",build);
+build();
+})();
+</script>
+</body>
+</html>
