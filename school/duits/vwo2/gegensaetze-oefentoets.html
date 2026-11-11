@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gegensätze suchen – oefentoets Duits</title>
+<style>
+:root{--bg:#f5f6fa;--card:#fff;--text:#1d2230;--muted:#5b6478;--border:#cfd5e2;--accent:#2a5bd7;--accent-t:#fff;--ok:#1a7f37;--ok-bg:#dcf5e3;--bad:#c62828;--bad-bg:#fde3e3}
+:root[data-theme="dark"]{--bg:#12151c;--card:#1c212c;--text:#e8ebf3;--muted:#9aa4ba;--border:#38404f;--accent:#6c97ff;--accent-t:#0d1220;--ok:#6fdc8c;--ok-bg:#16301f;--bad:#ff8a8a;--bad-bg:#3a1b1b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:18px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+h1{font-size:1.5rem;margin:.2em 0}
+.sub{color:var(--muted);margin:0 0 1em;font-size:.95rem}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 16px;min-height:46px}
+button.primary{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:600}
+#theme{white-space:nowrap}
+ol{list-style:none;margin:0;padding:0;counter-reset:q}
+li.q{counter-increment:q;background:var(--card);border:2px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0}
+li.q.ok{border-color:var(--ok);background:var(--ok-bg)}
+li.q.bad{border-color:var(--bad);background:var(--bad-bg)}
+label{display:block;font-weight:600;margin-bottom:6px}
+label::before{content:counter(q) ". ";color:var(--muted)}
+.w{color:var(--accent)}
+input{width:100%;font:inherit;font-size:1.1rem;padding:10px 12px;min-height:48px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.fb{margin-top:6px;font-weight:600}
+li.ok .fb{color:var(--ok)}li.bad .fb{color:var(--bad)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+#score{font-size:1.3rem;font-weight:700}
+.hint{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div>
+<h1>Gegensätze suchen</h1>
+<p class="sub">Oefentoets Duits – Noordhoff, paragraaf 10, p. 75 (woorden uit hoofdstuk 1 t/m 3)</p>
+</div>
+<button id="theme" type="button" aria-label="Wissel tussen licht en donker">Donker</button>
+</header>
+<p>Wat is het tegengestelde (de <em>Gegensatz</em>)? Voorbeeld: gestern ↔ heute. Schrijf bij zelfstandige naamwoorden het lidwoord erbij (bijv. <em>der Vater</em>).</p>
+<form id="form" autocomplete="off" novalidate>
+<ol id="list"></ol>
+<div class="bar">
+<button class="primary" type="submit" id="check">Controleer</button>
+<button type="button" id="new">Nieuwe vragen</button>
+<span id="score" aria-live="polite"></span>
+</div>
+<p class="hint">Hoofdletters en extra spaties maken niet uit. Het lidwoord moet wel kloppen.</p>
+</form>
+</main>
+<script>
+(function(){
+var PAIRS=[
+["jung","alt"],["blöd","klug"],["klein","groß"],["gehen","kommen"],["suchen","finden"],
+["morgen","gestern"],["morgens","abends"],["der Junge","das Mädchen"],["die Kinder","die Erwachsenen"],
+["die Mutter","der Vater"],["der Bruder","die Schwester"],["die Freundin","der Freund"],
+["hässlich","schön"],["nächste Woche","letzte Woche"]
+];
+// Standaardset (eerste set): vaste paren, vaste volgorde, vaste richting
+var DEFAULT_IDX=[0,1,3,4,5,7,9,11,12,13];
+var current=[],checked=false;
+var list=document.getElementById("list"),scoreEl=document.getElementById("score");
+
+function norm(s){return s.trim().replace(/\s+/g," ").toLowerCase();}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function build(items){
+  current=items;checked=false;scoreEl.textContent="";list.innerHTML="";
+  items.forEach(function(it,i){
+    var li=document.createElement("li");li.className="q";
+    var id="q"+i;
+    var lab=document.createElement("label");lab.htmlFor=id;
+    lab.appendChild(document.createTextNode("Tegengestelde van "));
+    var w=document.createElement("span");w.className="w";w.textContent=it.q;lab.appendChild(w);
+    var inp=document.createElement("input");
+    inp.type="text";inp.id=id;inp.setAttribute("autocapitalize","off");inp.setAttribute("autocorrect","off");inp.spellcheck=false;
+    var fb=document.createElement("div");fb.className="fb";
+    li.appendChild(lab);li.appendChild(inp);li.appendChild(fb);list.appendChild(li);
+  });
+}
+function randomSet(){
+  var idx=[];for(var i=0;i<PAIRS.length;i++)idx.push(i);
+  shuffle(idx);idx=idx.slice(0,10);
+  return idx.map(function(k){var flip=Math.random()<0.5;return {q:PAIRS[k][flip?1:0],a:PAIRS[k][flip?0:1]};});
+}
+function check(){
+  var lis=list.children,score=0;
+  current.forEach(function(it,i){
+    var li=lis[i],inp=li.querySelector("input"),fb=li.querySelector(".fb");
+    var ok=norm(inp.value)===norm(it.a);
+    if(ok)score++;
+    li.className="q "+(ok?"ok":"bad");
+    fb.textContent=ok?"Goed!":"Fout. Juiste antwoord: "+it.a;
+    inp.readOnly=true;
+  });
+  checked=true;scoreEl.textContent="Score: "+score+"/10";
+}
+document.getElementById("form").addEventListener("submit",function(e){e.preventDefault();if(!checked)check();});
+document.getElementById("new").addEventListener("click",function(){build(randomSet());window.scrollTo(0,0);});
+
+var root=document.documentElement,btn=document.getElementById("theme");
+function applyTheme(t){root.setAttribute("data-theme",t);btn.textContent=t==="dark"?"Licht":"Donker";}
+var saved=null;try{saved=localStorage.getItem("theme");}catch(e){}
+applyTheme(saved==="dark"||saved==="light"?saved:(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+btn.addEventListener("click",function(){
+  var t=root.getAttribute("data-theme")==="dark"?"light":"dark";
+  applyTheme(t);try{localStorage.setItem("theme",t);}catch(e){}
+});
+
+build(DEFAULT_IDX.map(function(k){return {q:PAIRS[k][0],a:PAIRS[k][1]};}));
+})();
+</script>
+</body>
+</html>
