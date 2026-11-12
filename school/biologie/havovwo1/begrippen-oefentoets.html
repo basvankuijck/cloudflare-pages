@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefentoets: Begrippen planten en dieren</title>
+<style>
+:root{--bg:#f4f7f2;--card:#fff;--text:#1d2a1f;--muted:#5a6b5d;--border:#cfdccf;--accent:#2e7d32;--accent-text:#fff;--good:#1b7a34;--good-bg:#e3f5e7;--bad:#b3261e;--bad-bg:#fdeaea;--focus:#1565c0}
+:root[data-theme="dark"]{--bg:#111812;--card:#1b251d;--text:#e8f0e8;--muted:#a3b3a5;--border:#34443630;--border:#344436;--accent:#66bb6a;--accent-text:#0d1a0e;--good:#7ddc8f;--good-bg:#1c3a24;--bad:#ff8a80;--bad-bg:#40201f;--focus:#90caf9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+h1{font-size:1.6rem;margin:0}
+.sub{color:var(--muted);margin:4px 0 0}
+button,select,input[type=text]{font:inherit;color:inherit}
+button{min-height:44px;padding:8px 18px;border-radius:10px;border:2px solid var(--accent);background:transparent;color:var(--text);cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-text);font-weight:600}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.bar button{flex:1 1 140px}
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:14px 0}
+.q.good{border-color:var(--good);border-width:2px}
+.q.bad{border-color:var(--bad);border-width:2px}
+.q h2{font-size:1.05rem;margin:0 0 10px}
+.num{color:var(--muted);font-weight:400;font-size:.85rem;display:block}
+label.opt{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px;border-radius:8px;cursor:pointer}
+label.opt:hover{background:var(--bg)}
+label.opt input{width:22px;height:22px;flex:none;accent-color:var(--accent)}
+input[type=text]{width:100%;min-height:44px;padding:8px 12px;border-radius:8px;border:2px solid var(--border);background:var(--bg)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px;align-items:center;margin:8px 0}
+.row select{width:100%;min-height:44px;padding:6px 8px;border-radius:8px;border:2px solid var(--border);background:var(--bg)}
+.row .term{font-weight:600}
+.row.good select{border-color:var(--good)}
+.row.bad select{border-color:var(--bad)}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.fb{display:none;margin-top:10px;padding:10px 12px;border-radius:8px}
+.checked .fb{display:block}
+.good .fb{background:var(--good-bg);color:var(--text)}
+.bad .fb{background:var(--bad-bg);color:var(--text)}
+.fb b.g{color:var(--good)}.fb b.b{color:var(--bad)}
+#score{display:none;background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:14px 16px;margin:14px 0;font-size:1.15rem}
+#score.show{display:block}
+#score strong{font-size:1.4rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Oefentoets: Begrippen planten en dieren</h1>
+    <p class="sub">Havo/vwo 1 Biologie · 15 vragen</p>
+  </div>
+  <button id="theme" type="button" aria-label="Wissel tussen licht en donker">Donker/licht</button>
+</header>
+
+<div class="bar">
+  <button class="primary" type="button" data-act="check">Nakijken</button>
+  <button type="button" data-act="reset">Opnieuw</button>
+  <button type="button" data-act="new">Nieuwe vragen</button>
+</div>
+
+<div id="score" role="status" aria-live="polite" tabindex="-1"></div>
+<main id="quiz"></main>
+
+<div class="bar">
+  <button class="primary" type="button" data-act="check">Nakijken</button>
+  <button type="button" data-act="reset">Opnieuw</button>
+  <button type="button" data-act="new">Nieuwe vragen</button>
+</div>
+</div>
+
+<script>
+/* ===== Vragenpool ===== */
+// Meerkeuze: a = index van het goede antwoord in opts
+var MC=[
+{q:"Welke stof maakt een plant bij fotosynthese, en welk gas komt daarbij vrij?",opts:["Glucose en zuurstof","Zuurstof en koolstofdioxide","Glucose en koolstofdioxide","Mineralen en zuurstof"],a:0,e:"Bij fotosynthese maakt de plant met energie uit licht glucose. Zuurstof komt vrij. Koolstofdioxide neemt de plant juist op."},
+{q:"Wat is het verschil tussen een houtachtige en een kruidachtige plant?",opts:["Houtachtige planten hebben stengels met veel hout, kruidachtige met bijna geen hout","Houtachtige planten hebben geen wortels, kruidachtige wel","Kruidachtige planten zijn altijd groter dan houtachtige","Houtachtige planten hebben geen bladeren"],a:0,e:"Het gaat om de stengel: bomen en struiken hebben veel hout, kruidachtige planten bijna geen."},
+{q:"Wat nemen de wortelharen op?",opts:["Water met mineralen","Glucose","Zuurstof uit de lucht","Stuifmeel"],a:0,e:"Wortelharen zitten aan de uiteinden van de zijwortels en nemen water met mineralen op."},
+{q:"Welk deel van de bloem lokt insecten om te komen bestuiven?",opts:["De bloemkroon","De bloemkelk","Het vruchtbeginsel","De helmknop"],a:0,e:"De kroonbladeren zijn vaak groot en opvallend gekleurd en lokken zo insecten. De kelk beschermt de knop."},
+{q:"Wat is bestuiving?",opts:["Het overbrengen van stuifmeel van een meeldraad naar een stempel","Het versmelten van een eicel met een mannelijke geslachtscel","Het uitgroeien van een zaad tot kiemplantje","Het wegslingeren van zaden"],a:0,e:"Bestuiving is het stuifmeel overbrengen naar een stempel. Het versmelten van de geslachtscellen heet bevruchting."},
+{q:"Wat wordt bij een appel vruchtvlees?",opts:["De bloembodem","De zaadhuid","De wortelharen","De stuifmeelbuis"],a:0,e:"Bij de appel wordt de bloembodem (het deel onder het vruchtbeginsel) het vruchtvlees."},
+{q:"Welke snavel zeeft plankton uit het water (zoals bij de wilde eend)?",opts:["Zeefsnavel","Kegelsnavel","Haaksnavel","Pincetsnavel"],a:0,e:"De wilde eend heeft een zeefsnavel. Plankton zijn heel kleine diertjes en plantjes in het water."},
+{q:"Een paard loopt op de toppen van zijn tenen, met hoeven. Hoe heet zo'n dier?",opts:["Topganger (hoefganger)","Zoolganger","Teenganger","Voetganger"],a:0,e:"Het paard is een topganger of hoefganger. Een kat is een teenganger, een beer en een mens zijn zoolgangers."},
+{q:"Wat is kieming?",opts:["Het uitgroeien van de kiem tot een kiemplantje, nadat het zaad water heeft opgenomen","Het ontstaan van stuifmeel in de helmknop","Het opnemen van koolstofdioxide door de bladeren","Het openspringen van een vrucht"],a:0,e:"Kieming begint als het zaad water opneemt. Dan groeit de kiem uit tot een kiemplantje."},
+{q:"Wat vervoeren de vaten in een plant?",opts:["Water met mineralen en glucose","Alleen zuurstof","Alleen stuifmeel","Alleen licht"],a:0,e:"Water en mineralen gaan van de wortels naar de rest van de plant. Glucose gaat van de bladeren naar de rest van de plant."},
+{q:"Hoe wordt de vrucht van een klis of tandzaad verspreid?",opts:["Met haakjes blijft de vrucht in de vacht van dieren hangen","Met vleugels door de wind","Door een pluisje dat blijft zweven","Door sappig vruchtvlees dat dieren opeten"],a:0,e:"Klis en tandzaad hebben haakjes. Daarmee blijven de vruchten in de vacht van dieren hangen."},
+{q:"Wat is een schutkleur?",opts:["Een kleur waardoor een dier bijna onzichtbaar is voor vijanden","Een felle kleur om insecten te lokken","De kleur van een zaadhuid","De groene kleur van bladeren"],a:0,e:"Een schutkleur is een aanpassing: het dier valt weinig op en is zo beter beschermd tegen vijanden."},
+{q:"Wat is bevruchting?",opts:["Het versmelten van de kern van een mannelijke en van een vrouwelijke geslachtscel","Het overbrengen van stuifmeel op een stempel","Het ontstaan van nectar in een bloem","Het openbarsten van de zaadhuid"],a:0,e:"Bij bevruchting versmelten de kernen van een mannelijke en een vrouwelijke geslachtscel. Er ontstaat een bevruchte eicel."},
+{q:"In welk deel van de meeldraad ontstaat het stuifmeel?",opts:["In de helmknop (helmhokjes)","In de stempel","In het vruchtbeginsel","In de bloemkelk"],a:0,e:"Bovenaan de meeldraad zit de helmknop. Daarin ontstaat het stuifmeel."}
+];
+
+// Invullen: a = geaccepteerde antwoorden (genormaliseerd vergeleken)
+var FILL=[
+{q:"Het vruchtbeginsel ontwikkelt zich na de bevruchting tot de ...",a:["vrucht","vruchten"],e:"Na de bevruchting wordt het vruchtbeginsel de vrucht. Daarin zitten de zaden."},
+{q:"In het zaadbeginsel ontstaat een ... (vrouwelijke geslachtscel).",a:["eicel","eicellen"],e:"In het zaadbeginsel zit de eicel, de vrouwelijke geslachtscel."},
+{q:"Een plant neemt het gas ... op uit de lucht, via kleine openingen in de bladeren.",a:["koolstofdioxide","co2"],e:"Koolstofdioxide heeft de plant nodig voor de fotosynthese."},
+{q:"Alle wortels van een plant samen heten het ...",a:["wortelstelsel","wortelstelsels"],e:"Alle wortels samen vormen het wortelstelsel."},
+{q:"Het zoete sap in bloemen waar insecten op afkomen heet ...",a:["nectar"],e:"Nectar is zoet sap in bloemen. Het trekt insecten aan."},
+{q:"Het platte gedeelte van een blad heet de ...",a:["bladschijf","bladschijven"],e:"De bladschijf is het platte deel. De bladsteel is het deel waarmee het blad aan de stengel vastzit."},
+{q:"Het stevige vlies dat een zaad beschermt heet de ...",a:["zaadhuid","zaadhuiden"],e:"De zaadhuid beschermt het zaad."},
+{q:"Een groepje vaten bij elkaar heet een ...",a:["vaatbundel","vaatbundels"],e:"Een groepje vaten is een vaatbundel. Alle vaten samen vormen het vatenstelsel."},
+{q:"Stuifmeelkorrels zijn de mannelijke ... van een plant.",a:["geslachtscellen","geslachtscel"],e:"Stuifmeel bestaat uit de mannelijke geslachtscellen van de plant."},
+{q:"Een dier dat op de hele voetzool loopt, zoals een beer of een mens, heet een ...",a:["zoolganger","zoolgangers"],e:"Een zoolganger loopt op de hele voetzool."},
+{q:"De kiem in een zaad ontstaat door celdelingen uit de bevruchte ...",a:["eicel","eicellen"],e:"De bevruchte eicel deelt zich steeds. Zo ontstaat de kiem."},
+{q:"Door het ... aan de vrucht van een paardenbloem blijft de vrucht lang in de lucht zweven.",a:["pluisje","pluisjes","pluis"],e:"Het pluisje is een hulpmiddel om door de wind verspreid te worden."},
+{q:"Bij fotosynthese komt het gas ... vrij, dat mensen en dieren inademen.",a:["zuurstof"],e:"Zuurstof ontstaat bij fotosynthese."},
+{q:"Te veel water verliezen heet ... Een plant kan hierdoor doodgaan.",a:["uitdroging"],e:"Bij uitdroging verliest een organisme te veel water."}
+];
+
+// Waar/onwaar
+var TF=[
+{q:"Bij windbloemen zijn de kroonbladeren groot en opvallend gekleurd.",a:false,e:"Onwaar. Windbloemen hebben kleine groene kroonbladeren. Grote opvallende kroonbladeren horen bij insectenbloemen."},
+{q:"Bij windbloemen hangen de helmknoppen vaak buiten de bloem.",a:true,e:"Waar. Zo kan de wind het stuifmeel makkelijk wegblazen."},
+{q:"Bij zelfbestuiving komt het stuifmeel op de stempel van dezelfde bloem of van een andere bloem aan dezelfde plant.",a:true,e:"Waar. Bij kruisbestuiving gaat het stuifmeel naar een andere plant van dezelfde soort."},
+{q:"Bij kruisbestuiving komt het stuifmeel op een bloem van dezelfde plant.",a:false,e:"Onwaar. Bij kruisbestuiving komt het stuifmeel op de stempel van een bloem aan een andere plant van dezelfde soort."},
+{q:"In een zaad zit reservevoedsel voor het kiemplantje.",a:true,e:"Waar. Ook mensen en dieren eten dit reservevoedsel."},
+{q:"Een peulvrucht is de vrucht van een bonenplant.",a:true,e:"Waar."},
+{q:"Groei en ontwikkeling betekenen hetzelfde.",a:false,e:"Onwaar. Groei is groter en zwaarder worden. Ontwikkeling is een verandering in de bouw."},
+{q:"Uitdroging kan ervoor zorgen dat een plant doodgaat.",a:true,e:"Waar. Uitdroging is te veel water verliezen."},
+{q:"Wortelharen zitten aan de uiteinden van de zijwortels.",a:true,e:"Waar. Ze nemen water met mineralen op."},
+{q:"De bladsteel is het platte gedeelte van het blad.",a:false,e:"Onwaar. Dat is de bladschijf. De bladsteel zit tussen de stengel en het blad."},
+{q:"Glucose gaat door de vaten van de wortels naar de bladeren.",a:false,e:"Onwaar. Water en mineralen gaan van de wortels naar de rest van de plant. Glucose gaat van de bladeren naar de rest van de plant."},
+{q:"Een insectenbloem heeft kleine groene kroonbladeren en veel stuifmeel.",a:false,e:"Onwaar. Dat past bij een windbloem. Een insectenbloem heeft grote opvallende kroonbladeren, geur en nectar."},
+{q:"Een zeefsnavel is een goede snavel om zaden te kraken.",a:false,e:"Onwaar. Voor zaden is er de kegelsnavel (vink). Een zeefsnavel zeeft plankton uit water."},
+{q:"Zuurstof ontstaat bij de fotosynthese.",a:true,e:"Waar. De plant geeft het af, en mensen en dieren ademen het in."}
+];
+
+// Koppelen: 4 paren [begrip, omschrijving]
+var MATCH=[
+{q:"Koppel elke snavel aan waarvoor hij dient.",p:[["Pincetsnavel","Puntige snavel voor insecten"],["Haaksnavel","Scherpe snavel om prooien te scheuren"],["Priemsnavel","Lange snavel om in natte bodem te prikken"],["Zeefsnavel","Snavel die plankton uit water zeeft"]],e:"Pincetsnavel: boomkruiper. Haaksnavel: buizerd. Priemsnavel: wulp. Zeefsnavel: wilde eend."},
+{q:"Koppel elke snavel aan de vogel die hem heeft.",p:[["Kegelsnavel","Vink"],["Pincetsnavel","Boomkruiper"],["Haaksnavel","Buizerd"],["Priemsnavel","Wulp"]],e:"Vink: kegelsnavel (zaden). Boomkruiper: pincetsnavel (insecten). Buizerd: haaksnavel (prooien scheuren). Wulp: priemsnavel (prikken in natte bodem)."},
+{q:"Koppel elk hulpmiddel voor zaadverspreiding aan een voorbeeld.",p:[["Pluisje","Paardenbloem"],["Vleugels","Esdoorn"],["Haakjes","Klis"],["Wegslingeren","Ooievaarsbek"]],e:"Paardenbloem: pluisje. Esdoorn: vleugels. Klis: haakjes. Ooievaarsbek: de vrucht springt open en slingert de zaden weg."},
+{q:"Koppel elk voorbeeld aan de manier waarop het zaad wordt verspreid.",p:[["Lijsterbes","Sappig vruchtvlees dat dieren eten"],["Berk","Vleugels"],["Tandzaad","Haakjes in de vacht"],["Paardenbloem","Pluisje"]],e:"Lijsterbes: dieren eten de vrucht en de zaden komen in de uitwerpselen terecht. Berk: vleugels. Tandzaad: haakjes. Paardenbloem: pluisje."},
+{q:"Koppel elke manier van lopen aan de omschrijving.",p:[["Zoolganger","Loopt op de hele voetzool"],["Teenganger","Loopt op de tenen"],["Topganger","Loopt op de toppen van de tenen, met hoeven"],["Schutkleur","Kleur waardoor een dier bijna onzichtbaar is"]],e:"Zoolganger: beer en mens. Teenganger: kat. Topganger: paard. Een schutkleur beschermt tegen vijanden."},
+{q:"Koppel elk deel van de bloem aan zijn taak.",p:[["Meeldraad","Mannelijk voortplantingsorgaan"],["Stamper","Vrouwelijk voortplantingsorgaan"],["Bloemkelk","Beschermt de bloem in de knop tegen uitdroging en kou"],["Bloemkroon","Lokt insecten voor bestuiving"]],e:"Meeldraad is mannelijk, stamper is vrouwelijk. De kelk beschermt de knop, de kroon lokt insecten."},
+{q:"Koppel elk deel van het blad aan de omschrijving.",p:[["Bladsteel","Deel waarmee het blad aan de stengel vastzit"],["Bladschijf","Het platte gedeelte van het blad"],["Nerven","Zorgen voor stevigheid en transport"],["Bladmoes","Alles tussen de nerven van het blad"]],e:"Bladsteel: vastzitten aan de stengel. Bladschijf: het platte deel. Nerven: stevigheid en transport. Bladmoes: het deel tussen de nerven."},
+{q:"Koppel elk deel van de wortel aan de omschrijving.",p:[["Hoofdwortel","Lange, dikke wortel van een plant"],["Zijwortels","Wortels die aftakken van de hoofdwortel"],["Wortelharen","Haartjes die water met mineralen opnemen"],["Wortelstelsel","Alle wortels van een plant samen"]],e:"De hoofdwortel is lang en dik. Zijwortels takken daarvan af. Wortelharen nemen water op. Alle wortels samen zijn het wortelstelsel."},
+{q:"Koppel elk deel van het zaad aan de omschrijving.",p:[["Zaadhuid","Stevig vlies dat het zaad beschermt"],["Navel","Plek waarmee het zaad vastzat aan de plant"],["Poortje","Gaatje waardoor het zaad snel water opneemt"],["Kiem","Het begin van een nieuwe plant in het zaad"]],e:"Zaadhuid beschermt, de navel is de vastzitplek, het poortje laat water door en de kiem is het begin van de nieuwe plant."}
+];
+
+var MIX={mc:5,fill:4,tf:3,match:3};
+
+/* ===== Hulpfuncties ===== */
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function el(tag,attrs,kids){var n=document.createElement(tag);for(var k in (attrs||{})){if(k==="text")n.textContent=attrs[k];else if(k==="class")n.className=attrs[k];else n.setAttribute(k,attrs[k])}(kids||[]).forEach(function(c){n.appendChild(c)});return n}
+function norm(s){return String(s).toLowerCase().trim().replace(/\s+/g," ").replace(/[.!?]+$/,"")}
+var lastIds={};
+function pick(pool,n,type){
+  var prev=lastIds[type]||[];
+  var idx=pool.map(function(_,i){return i});
+  var fresh=shuffle(idx.filter(function(i){return prev.indexOf(i)<0}));
+  var old=shuffle(idx.filter(function(i){return prev.indexOf(i)>=0}));
+  var chosen=fresh.concat(old).slice(0,n);
+  lastIds[type]=chosen;
+  return chosen.map(function(i){return pool[i]});
+}
+
+/* ===== Toets opbouwen ===== */
+var current=[]; // {type,item,node,...}
+var quiz=document.getElementById("quiz"),scoreEl=document.getElementById("score");
+
+function newSet(){
+  var items=[];
+  pick(MC,MIX.mc,"mc").forEach(function(x){items.push({type:"mc",item:x})});
+  pick(FILL,MIX.fill,"fill").forEach(function(x){items.push({type:"fill",item:x})});
+  pick(TF,MIX.tf,"tf").forEach(function(x){items.push({type:"tf",item:x})});
+  pick(MATCH,MIX.match,"match").forEach(function(x){items.push({type:"match",item:x})});
+  current=shuffle(items);
+  render();
+}
+
+function render(){
+  quiz.innerHTML="";scoreEl.className="";scoreEl.textContent="";
+  current.forEach(function(c,i){
+    var name="q"+i,it=c.item;
+    var box=el("section",{class:"q"});
+    box.appendChild(el("h2",{},[el("span",{class:"num",text:"Vraag "+(i+1)+" van "+current.length}),document.createTextNode(it.q)]));
+    if(c.type==="mc"){
+      c.order=shuffle(it.opts.map(function(_,k){return k}));
+      c.inputs=c.order.map(function(k,pos){
+        var inp=el("input",{type:"radio",name:name,value:k});
+        box.appendChild(el("label",{class:"opt"},[inp,el("span",{text:it.opts[k]})]));
+        return inp;
+      });
+    }else if(c.type==="tf"){
+      c.inputs=[true,false].map(function(v){
+        var inp=el("input",{type:"radio",name:name,value:String(v)});
+        box.appendChild(el("label",{class:"opt"},[inp,el("span",{text:v?"Waar":"Onwaar"})]));
+        return inp;
+      });
+    }else if(c.type==="fill"){
+      c.input=el("input",{type:"text",autocomplete:"off",autocapitalize:"off",spellcheck:"false","aria-label":"Jouw antwoord",placeholder:"Typ je antwoord"});
+      box.appendChild(c.input);
+    }else{
+      var defs=shuffle(it.p.map(function(p){return p[1]}));
+      c.rows=it.p.map(function(p,k){
+        var sel=el("select",{"aria-label":p[0]});
+        sel.appendChild(el("option",{value:"",text:"Kies..."}));
+        defs.forEach(function(d){sel.appendChild(el("option",{value:d,text:d}))});
+        var row=el("div",{class:"row"},[el("div",{class:"term",text:p[0]}),sel]);
+        box.appendChild(row);
+        return {row:row,sel:sel,right:p[1]};
+      });
+    }
+    c.fb=el("div",{class:"fb"});
+    box.appendChild(c.fb);
+    c.node=box;
+    quiz.appendChild(box);
+  });
+}
+
+/* ===== Nakijken ===== */
+function check(){
+  var score=0;
+  current.forEach(function(c){
+    var it=c.item,ok=false,given="";
+    if(c.type==="mc"){
+      var sel=c.inputs.filter(function(i){return i.checked})[0];
+      ok=!!sel&&Number(sel.value)===it.a;
+      given=sel?it.opts[Number(sel.value)]:"";
+      c.fbText=(ok?"":"Het goede antwoord: "+it.opts[it.a]+". ")+it.e;
+    }else if(c.type==="tf"){
+      var s=c.inputs.filter(function(i){return i.checked})[0];
+      ok=!!s&&(s.value==="true")===it.a;
+      c.fbText=it.e;
+    }else if(c.type==="fill"){
+      var v=norm(c.input.value);
+      ok=v!==""&&it.a.map(norm).indexOf(v)>=0;
+      c.fbText=(ok?"":"Het goede antwoord: "+it.a[0]+". ")+it.e;
+    }else{
+      ok=true;
+      c.rows.forEach(function(r){
+        var good=r.sel.value===r.right;
+        r.row.className="row "+(good?"good":"bad");
+        if(!good)ok=false;
+      });
+      c.fbText=it.e;
+    }
+    if(ok)score++;
+    c.node.className="q checked "+(ok?"good":"bad");
+    var wrong=!ok&&((c.type==="mc"||c.type==="tf")?!c.inputs.some(function(i){return i.checked}):c.type==="fill"?c.input.value.trim()==="":false);
+    c.fb.innerHTML="";
+    c.fb.appendChild(el("b",{class:ok?"g":"b",text:ok?"Goed! ":(wrong?"Fout (niet ingevuld). ":"Fout. ")}));
+    c.fb.appendChild(document.createTextNode(c.fbText));
+  });
+  var pct=Math.round(score/current.length*100);
+  scoreEl.innerHTML="";
+  scoreEl.appendChild(document.createTextNode("Score: "));
+  scoreEl.appendChild(el("strong",{text:score+" van "+current.length+" ("+pct+"%)"}));
+  var msg=pct>=80?" Heel goed!":pct>=55?" Voldoende, maar je kunt nog oefenen.":" Lees de begrippen nog eens door en probeer het opnieuw.";
+  scoreEl.appendChild(document.createTextNode(msg));
+  scoreEl.className="show";
+  scoreEl.scrollIntoView({behavior:"smooth",block:"start"});
+  scoreEl.focus({preventScroll:true});
+}
+
+function reset(){render();window.scrollTo({top:0,behavior:"smooth"})}
+function fresh(){newSet();window.scrollTo({top:0,behavior:"smooth"})}
+
+Array.prototype.forEach.call(document.querySelectorAll("[data-act]"),function(b){
+  b.addEventListener("click",function(){
+    var a=b.getAttribute("data-act");
+    if(a==="check")check();else if(a==="reset")reset();else fresh();
+  });
+});
+
+/* ===== Thema ===== */
+(function(){
+  var root=document.documentElement,mq=window.matchMedia("(prefers-color-scheme: dark)"),manual=false;
+  function set(t){root.setAttribute("data-theme",t)}
+  set(mq.matches?"dark":"light");
+  var f=function(e){if(!manual)set(e.matches?"dark":"light")};
+  if(mq.addEventListener)mq.addEventListener("change",f);
+  document.getElementById("theme").addEventListener("click",function(){
+    manual=true;set(root.getAttribute("data-theme")==="dark"?"light":"dark");
+  });
+})();
+
+newSet();
+</script>
+</body>
+</html>
