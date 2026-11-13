@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefentoets Aardrijkskunde – Hoofdstuk 1: Begrippen</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#1d2433;--muted:#5d677d;--accent:#2f6fed;--accent-text:#fff;--border:#d5dbe8;--good:#1a8f4c;--good-bg:#e3f6ea;--bad:#c8302b;--bad-bg:#fde8e7}
+:root[data-theme="dark"]{--bg:#12151c;--card:#1c212c;--text:#e8ecf5;--muted:#9aa5bd;--accent:#6f9bff;--accent-text:#0b1020;--border:#343c4f;--good:#4cd187;--good-bg:#163325;--bad:#ff7a73;--bad-bg:#3a1b1a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:18px;line-height:1.45}
+main{max-width:760px;margin:0 auto;padding:16px 14px 60px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+h1{font-size:1.5rem;margin:8px 0}
+p.intro{color:var(--muted);margin-top:0}
+button{font:inherit;cursor:pointer;border-radius:12px;border:2px solid var(--accent);min-height:48px;padding:10px 18px}
+.primary{background:var(--accent);color:var(--accent-text);font-weight:700}
+.secondary{background:transparent;color:var(--accent)}
+#theme{white-space:nowrap;min-width:48px}
+.q{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:14px;margin:14px 0}
+.q.right{border-color:var(--good)}.q.wrong{border-color:var(--bad)}
+.q h2{font-size:1.05rem;margin:0 0 10px}
+.q .nr{color:var(--muted);font-size:.85rem;display:block}
+label.opt{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 12px;margin:6px 0;border:2px solid var(--border);border-radius:12px;cursor:pointer}
+label.opt:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+label.opt input{width:22px;height:22px;flex:none;accent-color:var(--accent)}
+input[type=text]{width:100%;min-height:48px;font:inherit;padding:8px 12px;border-radius:12px;border:2px solid var(--border);background:var(--bg);color:var(--text)}
+.fb{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:600}
+.fb.right{background:var(--good-bg);color:var(--good)}.fb.wrong{background:var(--bad-bg);color:var(--bad)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.actions button{flex:1 1 200px}
+#result{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:14px;margin-top:18px;font-size:1.15rem;font-weight:700}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div>
+<h1>Oefentoets Aardrijkskunde – Hoofdstuk 1: Begrippen</h1>
+<p class="intro">Hoi Finn! 10 vragen over paragraaf 1.1 t/m 1.6. Vul alles in en druk onderaan op "Controleer".</p>
+</div>
+<button id="theme" class="secondary" type="button" aria-label="Wissel tussen licht en donker"></button>
+</header>
+<form id="quiz" autocomplete="off" onsubmit="return false"></form>
+<div id="result" class="hidden" role="status" aria-live="polite"></div>
+<div class="actions">
+<button id="check" class="primary" type="button">Controleer</button>
+<button id="new" class="secondary" type="button">Nieuwe vragen</button>
+</div>
+</main>
+<script>
+// mc: [vraag, [juiste antwoord, fout, fout, (fout)]]   fill: [vraag, [toegestane antwoorden], mooiAntwoord]
+var BANK=[
+{h:'1.1',t:'mc',q:'Een gebied ligt 1800 m boven zeeniveau. Wat voor gebied is dit?',o:['Hooggebergte','Middelgebergte','Heuvelland','Laagland'],a:0},
+{h:'1.1',t:'mc',q:'Een gebied ligt 350 m boven zeeniveau. Wat voor gebied is dit?',o:['Heuvelland','Hooggebergte','Laagland','Middelgebergte'],a:0},
+{h:'1.1',t:'mc',q:'Een gebied ligt 800 m boven zeeniveau. Wat voor gebied is dit?',o:['Middelgebergte','Heuvelland','Hooggebergte','Laagland'],a:0},
+{h:'1.1',t:'mc',q:'Wat is een laagland?',o:['Een vlak gebied met een hoogte onder de 200 m','Een gebied tussen 200 en 500 m hoogte','Een gebied van 1500 m of hoger','Een gebied onder de zeespiegel'],a:0},
+{h:'1.1',t:'mc',q:'Hoe ontstaat een stollingsgesteente?',o:['Vloeibaar magma stolt','Lagen sediment worden samengeperst','Water schuurt gesteente weg','De wind waait zand op'],a:0},
+{h:'1.1',t:'mc',q:'Hoe ontstaat een sedimentgesteente?',o:['Lagen sediment worden samengeperst','Vloeibaar magma stolt','Een gletsjer neemt stenen mee','Planten laten gesteente barsten'],a:0},
+{h:'1.1',t:'fill',q:'Een vlak gebied met een hoogteligging onder de 500 m heet een ... (één woord).',a:['laagvlakte'],s:'laagvlakte'},
+{h:'1.2',t:'mc',q:'Wat zijn hoogteverschillen in het landschap?',o:['Reliëf','Erosie','Sedimentatie','Verwering'],a:0},
+{h:'1.2',t:'mc',q:'Wat is verwering?',o:['Het verbrokkelen van gesteente door het weer en planten','Het wegschuren van gesteente door water, wind of ijs','Het blijven liggen van verbrokkeld gesteente','Het stollen van magma'],a:0},
+{h:'1.2',t:'fill',q:'Hoogteverschillen in het landschap noem je het ... (één woord).',a:['reliëf','relief'],s:'reliëf'},
+{h:'1.3',t:'mc',q:'Wat is erosie?',o:['De uitschurende werking van stromend water, wind of ijs','Het verbrokkelen van gesteente door het weer','Het blijven liggen van sediment','Het ontstaan van een rivier'],a:0},
+{h:'1.3',t:'mc',q:'Welk deel van een rivier ligt meestal in de bergen?',o:['De bovenloop','De middenloop','De benedenloop','De monding'],a:0},
+{h:'1.3',t:'mc',q:'Wat is zand volgens het boek?',o:['Kleine korreltjes gesteente die je nog met het blote oog ziet en die door verwering ontstaan','Een mix van klei, leem en grind','Fijnkorrelig gesteente dat je alleen met een microscoop ziet','Een grondsoort van dode plantenresten'],a:0},
+{h:'1.3',t:'fill',q:'Het middelste deel van een rivier heet de ... (één woord).',a:['middenloop'],s:'middenloop'},
+{h:'1.4',t:'mc',q:'Welk deel van een rivier is het laagste deel, vlak voordat het water de zee instroomt?',o:['De benedenloop','De bovenloop','De middenloop','De zijrivier'],a:0},
+{h:'1.4',t:'mc',q:'Wat is sedimentatie?',o:['Het blijven liggen van verbrokkeld gesteente','Het wegschuren van gesteente','Het verbrokkelen van gesteente','Het stollen van magma'],a:0},
+{h:'1.4',t:'fill',q:'Een door de wind opgewaaide zandheuvel heet een ... (één woord).',a:['duin','duinen'],s:'duin'},
+{h:'1.4',t:'mc',q:'Wat is een strand?',o:['De grens tussen land en water waar zand zich ophoopt','Een heuvel van opgewaaid zand','Een stuk land dat bij vloed niet overstroomt','Een droogvallend deel van de Waddenzee'],a:0},
+{h:'1.5',t:'mc',q:'Wat is een zwerfsteen?',o:['Een groot, zwaar rotsblok dat met het ijs is meegekomen','Een steentje in een rivier','Een steen die door de wind is opgewaaid','Een steen uit een dijk'],a:0},
+{h:'1.5',t:'mc',q:'Wat is een stroomgebied?',o:['Het gebied dat afwatert op een rivier en haar zijrivieren','Het gebied rond de monding van een rivier','Een gebied waar de wind sterk waait','Het laagste deel van een rivier'],a:0},
+{h:'1.5',t:'mc',q:'Hoe ontstaat een stuwwal?',o:['Door de werking van gletsjers op land','Door de wind','Door een rivier','Door de mens'],a:0},
+{h:'1.5',t:'fill',q:'Een mix van klei, leem, zand en grind die onder een gletsjer is meegevoerd, heet ... (één woord).',a:['keileem'],s:'keileem'},
+{h:'1.5',t:'fill',q:'Fijnkorrelig zand waarvan de meeste deeltjes kleiner zijn dan 0,063 mm heet ... (één woord).',a:['löss','loss'],s:'löss'},
+{h:'1.6',t:'mc',q:'Wat is een polder?',o:['Een stuk land, omgeven door dijken, waar de waterstand geregeld kan worden','Een heuvel die door mensen is gemaakt','Een stuk land dat bij vloed niet overstroomt','Een pomp om water weg te pompen'],a:0},
+{h:'1.6',t:'mc',q:'Wat is een terp?',o:['Een door de mens opgeworpen heuvel als bescherming tegen overstromingen','Een drooggemalen meer','Een dijk langs de zee','Een stuk land buiten de dijk'],a:0},
+{h:'1.6',t:'fill',q:'Een pomp waarmee polders worden drooggepompt heet een ... (één woord).',a:['gemaal'],s:'gemaal'},
+{h:'1.6',t:'fill',q:'Een polder in een drooggemalen meer heet een ... (één woord).',a:['droogmakerij'],s:'droogmakerij'},
+{h:'1.6',t:'fill',q:'Een grondsoort die ontstaat door de opeenhoping van dode plantenresten heet ... (één woord).',a:['veen'],s:'veen'},
+{h:'1.6',t:'mc',q:'Wat zijn wadden?',o:['Onbegroeide delen van de Waddenzee die twee keer per dag droogvallen','Stukken land die bij vloed niet overstromen','Polders in een drooggemalen meer','Heuvels van opgewaaid zand'],a:0},
+{h:'1.6',t:'mc',q:'Wat is een kwelder?',o:['Een stuk land dat bij vloed in de Waddenzee niet meer overstroomt','Een deel van de Waddenzee dat droogvalt','Een stuk land achter de dijk','Een heuvel tegen overstromingen'],a:0},
+{h:'1.6',t:'mc',q:'Wat is de buitendijkse kant?',o:['Het gebied buiten de dijk dat niet beschermd wordt tegen water','Het gebied achter de dijk','Het gebied rond een gemaal','Het gebied onder de zeespiegel'],a:0}
+];
+
+var current=[],checked=false;
+var quiz=document.getElementById('quiz'),result=document.getElementById('result');
+
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,'')}
+function dist(a,b){var d=[],i,j;for(i=0;i<=a.length;i++){d[i]=[i]}for(j=1;j<=b.length;j++)d[0][j]=j;
+ for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
+function fillOk(ans,list){var n=norm(ans);if(!n)return false;
+ return list.some(function(c){c=norm(c);return n===c||(c.length>=6&&dist(n,c)<=1)})}
+
+function pick(){
+ // zo verdeeld mogelijk over de paragrafen: eerst willekeurig, dan sorteren op paragraaf
+ var by={};shuffle(BANK).forEach(function(q){(by[q.h]=by[q.h]||[]).push(q)});
+ var heads=shuffle(Object.keys(by)),out=[],round=0;
+ while(out.length<10){var added=false;
+  for(var i=0;i<heads.length&&out.length<10;i++){var l=by[heads[i]];if(l[round]){out.push(l[round]);added=true}}
+  round++;if(!added)break}
+ return out.sort(function(a,b){return a.h<b.h?-1:a.h>b.h?1:Math.random()-.5});
+}
+
+function render(){
+ checked=false;result.className='hidden';result.textContent='';quiz.innerHTML='';
+ current=pick().map(function(q){
+  var o={q:q};if(q.t==='mc'){o.opts=shuffle(q.o.map(function(t,i){return{t:t,ok:i===q.a}}))}return o});
+ current.forEach(function(c,i){
+  var d=document.createElement('section');d.className='q';c.el=d;
+  var h=document.createElement('h2');
+  var nr=document.createElement('span');nr.className='nr';nr.textContent='Vraag '+(i+1)+' · paragraaf '+c.q.h;
+  h.appendChild(nr);h.appendChild(document.createTextNode(c.q.q));d.appendChild(h);
+  if(c.q.t==='mc'){
+   c.opts.forEach(function(op,k){
+    var l=document.createElement('label');l.className='opt';
+    var r=document.createElement('input');r.type='radio';r.name='q'+i;r.value=k;
+    l.appendChild(r);l.appendChild(document.createTextNode(op.t));d.appendChild(l)});
+  }else{
+   var t=document.createElement('input');t.type='text';t.setAttribute('aria-label','Jouw antwoord');
+   t.autocapitalize='off';t.spellcheck=false;d.appendChild(t);c.input=t}
+  quiz.appendChild(d)});
+ window.scrollTo(0,0);
+}
+
+function check(){
+ if(checked)return;checked=true;var score=0,empty=0;
+ current.forEach(function(c,i){
+  var ok=false,given='',correct;
+  if(c.q.t==='mc'){
+   var r=c.el.querySelector('input:checked');
+   if(r){var op=c.opts[+r.value];given=op.t;ok=op.ok}
+   correct=c.opts.filter(function(o){return o.ok})[0].t;
+   c.el.querySelectorAll('input').forEach(function(x){x.disabled=true});
+  }else{
+   given=c.input.value.trim();ok=fillOk(given,c.q.a);correct=c.q.s;c.input.disabled=true}
+  if(!given)empty++;
+  if(ok)score++;
+  c.el.classList.add(ok?'right':'wrong');
+  var f=document.createElement('div');f.className='fb '+(ok?'right':'wrong');
+  f.textContent=ok?'Goed! ✔':(given?'Fout ✘':'Niet ingevuld ✘')+' – het juiste antwoord is: '+correct;
+  c.el.appendChild(f)});
+ var msg=score>=9?'Top!':score>=7?'Goed bezig!':score>=5?'Bijna, nog even oefenen.':'Blijf oefenen, je kunt het!';
+ result.textContent='Je score: '+score+' van de 10. '+msg;
+ result.className='';result.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.getElementById('check').addEventListener('click',check);
+document.getElementById('new').addEventListener('click',render);
+
+// licht / donker
+var root=document.documentElement,tb=document.getElementById('theme');
+var mq=window.matchMedia('(prefers-color-scheme: dark)');
+function setTheme(t){root.setAttribute('data-theme',t);tb.textContent=t==='dark'?'☀️ Licht':'🌙 Donker'}
+setTheme(mq.matches?'dark':'light');
+mq.addEventListener&&mq.addEventListener('change',function(e){setTheme(e.matches?'dark':'light')});
+tb.addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark')});
+
+render();
+</script>
+</body>
+</html>
