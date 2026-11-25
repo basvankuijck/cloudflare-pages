@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefentoets Biologie H9 par. 2 t/m 4 (VWO 2) - Finn</title>
+<style>
+:root{--bg:#f7f7f5;--card:#ffffff;--text:#1d1d1b;--muted:#5d5d58;--accent:#2e7d4f;--border:#dcdcd6;--ans:#e8f3ec}
+[data-theme="dark"]{--bg:#16181a;--card:#22252a;--text:#e9e9e6;--muted:#a3a7ad;--accent:#6fcf97;--border:#3a3f46;--ans:#1f3a2a}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+h1{font-size:1.35rem;margin:8px 0 4px}
+.sub{color:var(--muted);font-size:.95rem;margin:0 0 12px}
+.note{background:var(--card);border:1px dashed var(--border);border-radius:10px;padding:10px 14px;font-size:.9rem;color:var(--muted)}
+button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:12px 0}
+.qhead{display:flex;justify-content:space-between;gap:8px;font-weight:700;color:var(--accent)}
+.lvl{font-size:.8rem;color:var(--muted);font-weight:400}
+.qtext{margin:6px 0 0}
+textarea{width:100%;box-sizing:border-box;min-height:70px;margin-top:8px;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit}
+.ans{display:none;margin-top:8px;padding:10px 12px;border-radius:8px;background:var(--ans);font-size:.95rem}
+.ans.show{display:block}
+.ans strong{color:var(--accent)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Oefentoets Biologie: H9 par. 2 t/m 4 (VWO 2)</h1>
+  <button id="theme" type="button">Donker / licht</button>
+</header>
+<p class="sub">Voor Finn. Schrijf je antwoord, klik op Controleer om de modelantwoorden te zien.</p>
+<p class="note">Aangenomen onderwerpen: 9.2 zenuwstelsel (reflexboog, actiepotentiaal, synaps, autonome zenuwstelsel), 9.3 hormonen (bloedsuikerregeling, insuline en glucagon), 9.4 homeostase (negatieve terugkoppeling, temperatuur- en vochtregeling). Klopt dit niet met je boek? Laat het weten.</p>
+
+<div id="questions"></div>
+
+<div class="bar">
+  <button class="primary" id="check" type="button">Controleer</button>
+  <button id="new" type="button">Nieuwe vragen</button>
+</div>
+</div>
+
+<script>
+const ITEMS = [
+  {lvl:"Analyseren", v:[
+    {q:"Een leerling trekt zijn hand terug van een hete kachel nog voordat hij het heet voelt. Leg met de begrippen receptor, sensorisch neuron, schakelneuron, motorisch neuron en effector uit welke route de prikkel aflegt. Waarom gaat dit zonder dat de hersenen eerst beslissen?",
+     a:"Receptor (huid) -> sensorisch neuron -> schakelneuron in het ruggenmerg -> motorisch neuron -> effector (spier). Dit is een reflexboog. De verwerking gebeurt in het ruggenmerg, dus veel sneller dan via de hersenen. Pas daarna gaat een signaal omhoog naar de hersenen, waardoor de leerling de pijn voelt."},
+    {q:"Bij een kniereflex (hamer op de pees onder de knieschijf) schiet het been omhoog. Beschrijf de route van de prikkel en leg uit wat het verschil is met een bewuste beweging, zoals een bal wegtrappen.",
+     a:"Rekreceptor in de pees/spier -> sensorisch neuron -> ruggenmerg -> motorisch neuron -> strekspier. Bij de reflex wordt de beweging automatisch aangestuurd in het ruggenmerg. Bij een bewuste beweging stuurt de hersenen de beweging aan."}
+  ]},
+  {lvl:"Analyseren", v:[
+    {q:"Een zenuwcel werkt volgens de alles-of-niets-wet. Leg uit waarom een sterkere prikkel toch een sterkere reactie geeft, terwijl elke actiepotentiaal even groot is.",
+     a:"Een actiepotentiaal ontstaat alleen als de drempelwaarde wordt bereikt, maar dan is hij altijd even groot. Een sterkere prikkel geeft meer actiepotentialen per seconde (hogere frequentie). Sterkte wordt dus gecodeerd in de frequentie."},
+    {q:"Beschrijf wat er in de synaps gebeurt als een actiepotentiaal het uiteinde van een zenuwcel bereikt. Waarom loopt het signaal maar één kant op?",
+     a:"Synapsblaasjes geven neurotransmitter af in de synapsspleet. Die bindt aan receptoren op de volgende cel en geeft daar een nieuw signaal. Het signaal loopt maar één kant op, omdat alleen de volgende cel de juiste receptoren heeft. Daarna wordt de transmitter afgebroken of opgenomen, zodat het signaal stopt."}
+  ]},
+  {lvl:"Analyseren", v:[
+    {q:"Vergelijk het sympathische en het parasympathische zenuwstelsel. Welk deel verhoogt je hartslag tijdens een proefwerk en welk deel stimuleert je spijsvertering na het eten?",
+     a:"Sympathisch: verhoogt hartslag en remt de spijsvertering, actief bij stress of inspanning (proefwerk). Parasympathisch: verlaagt de hartslag en stimuleert de spijsvertering, actief in rust (na het eten). Ze werken elkaar tegen."},
+    {q:"Een medicijn blokkeert de werking van de parasympathische zenuwen op het hart. Voorspel wat er met de hartslag gebeurt en verklaar je antwoord.",
+     a:"De remming door het parasympathische deel valt weg. Het sympathische deel krijgt dan de overhand, dus de hartslag stijgt."}
+  ]},
+  {lvl:"Analyseren", v:[
+    {q:"Na een pizza stijgt je bloedsuiker. Welk hormoon komt daarop vrij, uit welke klier komt het, en wat doet het in de lever en de spieren? Wat gebeurt er met de bloedsuiker?",
+     a:"Insuline, uit de alvleesklier. Het stimuleert de opname van glucose in cellen (spieren, lever). De lever zet glucose om in glycogeen. Gevolg: de bloedsuiker daalt weer naar normaal."},
+    {q:"Vergelijk insuline en glucagon. Welke klier maakt ze, wanneer komt elk vrij en wat doen ze met de bloedsuiker?",
+     a:"Beide komen uit de alvleesklier. Insuline komt vrij bij een hoge bloedsuiker en verlaagt die. Glucagon komt vrij bij een lage bloedsuiker en verhoogt die, doordat de lever glycogeen omzet in glucose."}
+  ]},
+  {lvl:"Evalueren", v:[
+    {q:"Leg uit waarom de bloedsuikerregeling een voorbeeld is van negatieve terugkoppeling. Beoordeel waarom dit nuttig is: wat zou er gebeuren zonder deze regeling?",
+     a:"Een afwijking van de norm (hoge bloedsuiker) zet een tegengestelde reactie in gang (insuline) die de afwijking opheft. Zo schiet het niet door. Zonder deze regeling zou de bloedsuiker blijven stijgen of dalen, met schade aan organen of bewusteloosheid als gevolg."},
+    {q:"Bij diabetes type 1 maakt het lichaam te weinig insuline. Waarom kan een insuline-injectie de regeling nabootsen, maar niet perfect? Noem een reden.",
+     a:"De injectie geeft de hormoonwerking terug, zodat de bloedsuiker weer wordt verlaagd. De regeling is niet perfect: de alvleesklier reageert automatisch en nauwkeurig op eten en inspanning. Een injectie werkt vertraagd en past zich niet vanzelf aan."}
+  ]},
+  {lvl:"Evalueren", v:[
+    {q:"Beoordeel of het zenuwstelsel of het hormoonstelsel beter geschikt is om je hand in een fractie van een seconde terug te trekken, en om de lichaamsgroei te regelen. Motiveer met de snelheid en de duur van de werking.",
+     a:"Zenuwstelsel: heel snel en kortdurend, gericht op een plek. Dus geschikt voor de handreflex. Hormoonstelsel: langzamer en langduriger, via het bloed naar veel organen. Dus geschikt voor groei."},
+    {q:"Een student zegt: 'Hormonen werken altijd langzamer dan zenuwen.' Beoordeel deze stelling aan de hand van een voorbeeld.",
+     a:"Onjuist als algemene regel. Adrenaline is een hormoon dat bij schrik via het bloed snel werkt op hart en spieren. Een zenuw kan bij een reflex weer een andere snelheid hebben. Het verschil zit dus niet alleen in het type signaal."}
+  ]},
+  {lvl:"Analyseren", v:[
+    {q:"Bij een warme zomerdag dreigt je lichaamstemperatuur te stijgen. Beschrijf de regelkring: welke onderdelen zijn er (sensor, regelcentrum, effector) en welke reactie volgt?",
+     a:"Sensor: temperatuurreceptoren in de huid en het bloed. Regelcentrum: hypothalamus. Effector: zweetklieren en bloedvaten in de huid (die verwijden). Reactie: zweten en warmteafgifte, waardoor de temperatuur daalt. Dit is negatieve terugkoppeling."},
+    {q:"Verklaar waarom rillen en zweten samen de temperatuur binnen smalle grenzen houden, ook al werken ze tegengesteld.",
+     a:"Zweten koelt af, rillen produceert warmte. De hypothalamus schakelt steeds de juiste van de twee in. Zo blijft de temperatuur rond de norm (homeostase)."}
+  ]},
+  {lvl:"Analyseren", v:[
+    {q:"Na een zware training verlies je veel vocht via het zweet. Leg uit hoe het lichaam de waterbalans herstelt met het hormoon ADH, en wat er met je urine gebeurt.",
+     a:"Het bloed wordt geconcentreerder. De hypothalamus merkt dit op en de hypofyse geeft ADH af. De nieren nemen meer water terug op. Daardoor is de urine geconcentreerder en kleiner in volume, en wordt het bloed weer verdund."},
+    {q:"Waarom is de hypothalamus een belangrijke schakel bij de regeling van vocht en temperatuur? Analyseer zijn rol.",
+     a:"De hypothalamus meet de toestand van het bloed en de temperatuur (regelcentrum). Hij stuurt via de hypofyse (hormonen) of via zenuwen (effectoren) bij. Zo koppelt hij zenuw- en hormoonregeling aan elkaar."}
+  ]},
+  {lvl:"Creëren", v:[
+    {q:"Bedenk een experiment om te onderzoeken of een ontbijt de reactietijd van leerlingen beinvloedt. Noem je hypothese, de onafhankelijke en afhankelijke variabele, een controlevariabele en de controlegroep.",
+     a:"Hypothese: leerlingen die ontbeten hebben reageren sneller. Onafhankelijke variabele: wel of geen ontbijt. Afhankelijke variabele: reactietijd (bijvoorbeeld met de lineaaltest). Controlevariabele: zelfde tijdstip en zelfde slaapduur. Controlegroep: leerlingen zonder ontbijt."},
+    {q:"Een leerling zegt: 'Ik heb een reflex, dus ik voel niets.' Beoordeel deze uitspraak en onderbouw je oordeel.",
+     a:"Onjuist. Bij een reflex wordt de beweging automatisch aangestuurd via het ruggenmerg. Het signaal gaat ook omhoog naar de hersenen, dus je voelt de prikkel wel, maar pas nadat de reflex al is begonnen."}
+  ]}
+];
+
+function pick(){
+  const box = document.getElementById("questions");
+  box.innerHTML = "";
+  ITEMS.forEach((item, i) => {
+    const v = item.v[Math.floor(Math.random() * item.v.length)];
+    const div = document.createElement("div");
+    div.className = "q";
+    div.innerHTML =
+      '<div class="qhead"><span>Vraag ' + (i + 1) + '</span><span class="lvl">' + item.lvl + '</span></div>' +
+      '<p class="qtext"></p>' +
+      '<textarea placeholder="Jouw antwoord"></textarea>' +
+      '<div class="ans"><strong>Modelantwoord:</strong> </div>';
+    div.querySelector(".qtext").textContent = v.q;
+    div.querySelector(".ans").append(v.a);
+    box.appendChild(div);
+  });
+}
+
+document.getElementById("check").addEventListener("click", () => {
+  document.querySelectorAll(".ans").forEach(el => el.classList.add("show"));
+});
+document.getElementById("new").addEventListener("click", () => {
+  pick();
+  window.scrollTo({top: 0, behavior: "smooth"});
+});
+
+const root = document.documentElement;
+const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+root.setAttribute("data-theme", dark ? "dark" : "light");
+document.getElementById("theme").addEventListener("click", () => {
+  root.setAttribute("data-theme", root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+});
+
+pick();
+</script>
+</body>
+</html>
