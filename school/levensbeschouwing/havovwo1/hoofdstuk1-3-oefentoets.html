@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefentoets Levensbeschouwing hoofdstuk 1 t/m 3</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #1b2333;
+    --muted: #55607a;
+    --border: #cfd6e6;
+    --accent: #2f5bd8;
+    --accent-text: #ffffff;
+    --ok-bg: #e3f6e8;
+    --ok-border: #2e9b52;
+    --ok-text: #14602c;
+    --bad-bg: #fde8e8;
+    --bad-border: #d04545;
+    --bad-text: #8a1c1c;
+    --focus: #f0a400;
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151d;
+    --card: #1c212d;
+    --text: #e8ecf5;
+    --muted: #a3adc4;
+    --border: #3a4258;
+    --accent: #7f9cff;
+    --accent-text: #0e1220;
+    --ok-bg: #16311f;
+    --ok-border: #4cc274;
+    --ok-text: #a8ebc0;
+    --bad-bg: #3a1c1f;
+    --bad-border: #ef7a7a;
+    --bad-text: #ffc3c3;
+    --focus: #ffc94d;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 1rem; }
+  header { display: flex; gap: 1rem; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1rem; }
+  h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 .25rem; }
+  .sub { margin: 0; color: var(--muted); }
+  button {
+    font: inherit;
+    font-weight: 600;
+    min-height: 3rem;
+    padding: .6rem 1.2rem;
+    border-radius: .75rem;
+    border: 2px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-text);
+    cursor: pointer;
+  }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible, input:focus-visible + span, input[type="text"]:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .q {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 0 1rem;
+    min-width: 0;
+  }
+  .q.ok { border-color: var(--ok-border); }
+  .q.bad { border-color: var(--bad-border); }
+  .q legend { padding: 0 .4rem; font-weight: 700; color: var(--muted); }
+  .qtext { font-weight: 600; margin: 0 0 .75rem; }
+  .tag { display: inline-block; font-size: .8rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 0 .6rem; margin-left: .4rem; font-weight: 400; }
+  .opt { display: flex; align-items: center; gap: .75rem; min-height: 3rem; padding: .5rem .75rem; margin: .4rem 0; border: 2px solid var(--border); border-radius: .75rem; cursor: pointer; }
+  .opt:hover { border-color: var(--accent); }
+  .opt input { width: 1.4rem; height: 1.4rem; flex: 0 0 auto; accent-color: var(--accent); margin: 0; }
+  .opt span { flex: 1 1 auto; overflow-wrap: anywhere; }
+  .opt.picked { border-color: var(--accent); }
+  input[type="text"] {
+    font: inherit;
+    width: 100%;
+    min-height: 3rem;
+    padding: .5rem .75rem;
+    border-radius: .75rem;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+  }
+  .fb { margin: .75rem 0 0; padding: .6rem .8rem; border-radius: .6rem; font-weight: 600; }
+  .fb.ok { background: var(--ok-bg); color: var(--ok-text); }
+  .fb.bad { background: var(--bad-bg); color: var(--bad-text); }
+  .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin: 1.25rem 0; }
+  .actions button { flex: 1 1 12rem; }
+  #result { background: var(--card); border: 2px solid var(--accent); border-radius: 1rem; padding: 1rem; margin-bottom: 1rem; font-weight: 700; }
+  #result[hidden] { display: none; }
+  @media (max-width: 480px) {
+    body { font-size: 1.05rem; }
+    h1 { font-size: 1.35rem; }
+    .wrap { padding: .75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Oefentoets Levensbeschouwing</h1>
+      <p class="sub">Hoofdstuk 1 t/m 3. 15 vragen. Vul alles in en druk op Controleer.</p>
+    </div>
+    <button type="button" id="themeBtn" class="secondary" aria-pressed="false">Donker</button>
+  </header>
+
+  <form id="quiz" onsubmit="return false" autocomplete="off"></form>
+
+  <div id="result" role="status" aria-live="polite" hidden></div>
+
+  <div class="actions">
+    <button type="button" id="checkBtn">Controleer</button>
+    <button type="button" id="newBtn" class="secondary">Nieuwe vragen</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Vraagbank ----------
+     ch: hoofdstuk (1, 2 of 3)
+     t: "mc" (meerkeuze, a[0] is het goede antwoord, wordt geschud),
+        "tf" (waar/niet waar, a: true/false),
+        "fill" (invullen, a: lijst met goede antwoorden)
+  */
+  var BANK = [
+    /* Hoofdstuk 1 */
+    { ch: 1, t: "mc", q: "Wat is levensbeschouwing?",
+      o: ["Hoe jij naar het leven kijkt: wat vind je belangrijk en zinvol?", "Alleen wat je gelooft in een God", "Een vak waarin je jaartallen leert", "Alle feiten die wetenschappers bewezen hebben"] },
+    { ch: 1, t: "fill", q: "Een ander woord voor levensbeschouwing is: levens...?", a: ["levensvisie", "visie"], show: "levensvisie" },
+    { ch: 1, t: "mc", q: "Wat betekent (be)schouwen?",
+      o: ["Ergens aandachtig naar kijken en daarover nadenken", "Snel iets afkijken van een ander", "Iets opschrijven in je schrift", "Iets leren voor een toets"] },
+    { ch: 1, t: "mc", q: "Waarom zit je eigenlijk op school?",
+      o: ["Volwassenen hebben kennis en levenservaring opgedaan. Jij mag daarvan profiteren, dus je hoeft niet alles zelf uit te zoeken.", "Omdat scholen bedacht zijn om kinderen te pesten", "Omdat het gratis en voor niets is", "Omdat je anders niets kunt leren"] },
+    { ch: 1, t: "mc", q: "Wat betekent objectief?",
+      o: ["Je probeert alleen naar de feiten te kijken", "Je kijkt vooral naar wat jij zelf vindt", "Je doet wat de meerderheid doet", "Je zegt gewoon wat je gevoel zegt"] },
+    { ch: 1, t: "fill", q: "Je kijkt gekleurd, door je eigen mening of gevoel. Dan ben je niet objectief maar ...", a: ["subjectief"], show: "subjectief" },
+    { ch: 1, t: "tf", q: "Het verschil tussen een mening en een feit is altijd even duidelijk.", a: false },
+    { ch: 1, t: "mc", q: "Wat bedoelt het boek met de \"gekleurde bril\"?",
+      o: ["Mensen kijken door hun eigen visie naar de werkelijkheid, vaak zonder het door te hebben", "Een bril met gekleurde glazen tegen de zon", "Je ziet alles precies zoals het is", "Je kijkt alleen naar kleurrijke dingen"] },
+    { ch: 1, t: "mc", q: "Wat wisten veel mensen vroeger \"heel zeker\"?",
+      o: ["Dat de zon rond de aarde draaide", "Dat roken ongezond was", "Dat vrouwen net zo slim zijn als mannen", "Dat iedereen gelijk is"] },
+    { ch: 1, t: "mc", q: "Wat vond Martin Luther King?",
+      o: ["Dat je nooit geweld mag gebruiken om je zin te krijgen", "Dat mensen met een andere mening rustig vermoord mochten worden", "Dat discriminatie best kan", "Dat je alleen moet luisteren naar mensen die het met je eens zijn"] },
+    { ch: 1, t: "fill", q: "Een queeste is een ... Je leven is er eentje. (Eén woord: een soort tocht.)", a: ["speurtocht", "zoektocht"], show: "speurtocht" },
+    { ch: 1, t: "tf", q: "Je kunt veel leren van de fouten van mensen die al eerder aan hun eigen queeste begonnen zijn.", a: true },
+
+    /* Hoofdstuk 2 */
+    { ch: 2, t: "mc", q: "Waarom is Levensbeschouwing een schoolvak?",
+      o: ["Het helpt je om verstandige keuzes te maken en blunders te voorkomen", "Omdat je anders geen levensvisie hebt", "Omdat je er rijk van wordt", "Omdat je er altijd het goede antwoord leert"] },
+    { ch: 2, t: "tf", q: "Wiskunde en Biologie helpen dokter Rob bij zijn vraag over euthanasie.", a: false },
+    { ch: 2, t: "mc", q: "Wat is een dilemma?",
+      o: ["Een moeilijke keuze uit twee mogelijkheden", "Een soort ziekte", "Een vraag met maar één antwoord", "Een regel van de dokter"] },
+    { ch: 2, t: "mc", q: "Waarom is Erik een slechte tandarts, terwijl hij de beste van zijn jaar was?",
+      o: ["Hij kan zich niet inleven in zijn bange patiënten", "Hij kan niet met een boor werken", "Hij weet te weinig van tanden", "Hij haalt te vaak slechte cijfers"] },
+    { ch: 2, t: "mc", q: "Wat moet een rechter zoals Annemarie kunnen?",
+      o: ["Onbevooroordeeld rechtspreken", "Altijd de zaak van haar vrienden winnen", "Zo snel mogelijk beslissen", "Alleen naar de technische kant kijken"] },
+    { ch: 2, t: "mc", q: "Wat is de les van de natuurkundige (Einstein)?",
+      o: ["Bij wetenschap kijk je niet alleen naar de techniek, maar ook naar de gevolgen voor mensen", "Alles wat technisch kan, mag ook", "Wetenschap heeft niets met geweten te maken", "Een atoombom is een goede uitvinding"] },
+    { ch: 2, t: "mc", q: "Wat leer je van de filmmaker (Romain)?",
+      o: ["Films, series en boeken zitten vol meningen, en je leert hoe makers jouw mening proberen te beïnvloeden", "Films zijn altijd neutraal", "Alleen speelfilms hebben een mening", "Je moet films nooit analyseren"] },
+    { ch: 2, t: "mc", q: "Waarom krijgen Mark en Floor ineens veel levensbeschouwelijke vragen?",
+      o: ["Hun baby is in alles afhankelijk van hen, dus ze hebben een zware verantwoordelijkheid", "Omdat ze een nieuw huis hebben", "Omdat ze gaan verhuizen", "Omdat hun baby al kan praten"] },
+    { ch: 2, t: "mc", q: "Waar gaat het voorbeeld \"stemmen\" over?",
+      o: ["Je moet je afvragen welke partij het beste bij jouw levensbeschouwing past", "Je moet stemmen op de grootste partij", "Je moet stemmen zoals je ouders doen", "Je mag pas stemmen als je geslaagd bent"] },
+    { ch: 2, t: "mc", q: "Waarom zit Agnes met een dilemma over vliegvakanties?",
+      o: ["Ze houdt van reizen, maar vliegen is slecht voor de opwarming van de aarde, dus ze komt in conflict met haar geweten", "Ze is bang om te vliegen", "Vliegen is te duur", "Ze heeft geen paspoort"] },
+    { ch: 2, t: "mc", q: "Wat ziet Miranda in het journaal?",
+      o: ["Veel van wat er mis is in de wereld komt door egoïsme, slecht luisteren en vooroordelen", "Dat alles in de wereld goed gaat", "Dat politici altijd gelijk hebben", "Dat het vak Levensbeschouwing overbodig is"] },
+    { ch: 2, t: "tf", q: "Wegpiraten in het verkeer (voorbeeld van Angela) hebben zich volgens het boek nooit goed levensbeschouwelijk ontwikkeld.", a: true },
+    { ch: 2, t: "mc", q: "Wat gebeurt er bij Karin en haar vader met dementie (Alzheimer)?",
+      o: ["Haar vader herkent haar soms niet meer en zij is eigenlijk de moeder van haar eigen vader geworden", "Haar vader wordt weer jong", "Haar vader wordt beter", "Karin krijgt zelf Alzheimer"] },
+    { ch: 2, t: "fill", q: "Je kunt je goed inleven in een ander. Het boek noemt dat een belangrijke levensbeschouwelijke ...", a: ["vaardigheid"], show: "vaardigheid" },
+    { ch: 2, t: "fill", q: "Als jij mee mag beslissen hoe Nederland geregeerd wordt, heet dat ...", a: ["democratie"], show: "democratie" },
+
+    /* Hoofdstuk 3 */
+    { ch: 3, t: "mc", q: "Wat is het verschil tussen een hond en een mens (raadsel)?",
+      o: ["Een hond hoeft zich niet af te vragen wat het betekent om mens te zijn", "Een hond kan niet denken", "Een mens heeft instinct, een hond niet", "Een hond stelt meer vragen"] },
+    { ch: 3, t: "fill", q: "Dieren hebben een aangeboren ... dat ze vertelt hoe ze moeten reageren.", a: ["instinct"], show: "instinct" },
+    { ch: 3, t: "mc", q: "Welke vraag is een gewone vraag?",
+      o: ["Wil je pindakaas of hagelslag op je brood?", "Hoe is de aarde ontstaan?", "Wat is de zin van het leven?", "Bestaat er een God?"] },
+    { ch: 3, t: "mc", q: "Welke vraag is een wetenschappelijke vraag?",
+      o: ["Is er ooit leven geweest op Mars?", "Hoe laat is het?", "Hoe ga ik om met verdriet?", "Wat wil ik later worden?"] },
+    { ch: 3, t: "mc", q: "Welke vraag is een levensvraag?",
+      o: ["Wat is de zin van het leven?", "Wat is de hoofdstad van Frankrijk?", "Hoe werden de piramides gebouwd?", "Hoe heet jij?"] },
+    { ch: 3, t: "tf", q: "Op een wetenschappelijke vraag kan er ooit wel een definitief antwoord komen.", a: true },
+    { ch: 3, t: "tf", q: "De wetenschap kan bewijzen of er een God bestaat.", a: false },
+    { ch: 3, t: "mc", q: "Hoe zet je een levensvraag om in de ik-vorm?",
+      o: ["\"Hoe ga je om met verdriet?\" wordt \"Hoe ga ik om met verdriet?\"", "\"Hoe ga je om met verdriet?\" wordt \"Hoe gaat het met je?\"", "Je laat de vraag gewoon zoals die is", "Je maakt er een feit van"] },
+    { ch: 3, t: "mc", q: "Wie was Socrates?",
+      o: ["Een grote denker en wijze uit de tijd van de oude Grieken, die mensen moeilijke vragen stelde", "Een geleerde met veel kennis over wetenschap", "Een dokter uit Athene", "Een filmmaker"] },
+    { ch: 3, t: "mc", q: "Wat wil het jongetje op het strand duidelijk maken aan Socrates?",
+      o: ["Socrates kan net zomin alle geheimen van de wereld in zijn hoofd krijgen als hij de zee in het kuiltje", "Dat het kuiltje te klein is", "Dat Socrates moet gaan zwemmen", "Dat spelen belangrijker is dan nadenken"] },
+    { ch: 3, t: "mc", q: "Wat leer je van het verhalenschema?",
+      o: ["Verhalen bevatten vaak een wijze les of waarschuwing, en je moet de bedoeling erachter leren ontdekken", "Verhalen zijn altijd echt gebeurd", "Verhalen hebben nooit een mening", "Verhalen zijn alleen voor kinderen"] },
+    { ch: 3, t: "tf", q: "Het verhaal van Socrates en het jongetje wordt in werkelijkheid over iemand anders verteld (meneer Augustinus).", a: true },
+    { ch: 3, t: "fill", q: "Hoeveel kenmerken van levensvragen noemt het boek? (Typ een getal of woord.)", a: ["6", "zes"], show: "zes" },
+    { ch: 3, t: "mc", q: "Kenmerk 1 van levensvragen: wat is dat?",
+      o: ["Levensvragen zijn nooit oppervlakkig", "Levensvragen hebben één simpel antwoord", "Levensvragen gaan nooit over jou", "Levensvragen zijn alleen voor wetenschappers"] },
+    { ch: 3, t: "mc", q: "Waarom is \"Hoe is het heelal ontstaan?\" geen levensvraag?",
+      o: ["Het is een wetenschappelijke vraag die niet direct met jou persoonlijk te maken heeft", "Omdat niemand het antwoord weet", "Omdat het te makkelijk is", "Omdat het over God gaat"] },
+    { ch: 3, t: "fill", q: "Levensvragen dwingen je eerlijk te zijn tegen jezelf. Daarom heten ze ook wel ...vragen.", a: ["gewetensvragen", "gewetensvraag"], show: "gewetensvragen" },
+    { ch: 3, t: "tf", q: "Op elke levensvraag is maar één goed antwoord mogelijk.", a: false },
+    { ch: 3, t: "tf", q: "Je antwoord op een levensvraag kan veranderen, maar een nieuwe mening is niet altijd een verbetering.", a: true },
+    { ch: 3, t: "mc", q: "Waarom helpt nadenken over levensvragen je?",
+      o: ["Je krijgt beter zicht op wat voor jou goede en foute keuzes zijn, en dus richting in je leven", "Je krijgt er altijd het definitieve antwoord door", "Je hoeft daarna nooit meer na te denken", "Je wordt er een wetenschapper van"] },
+    { ch: 3, t: "mc", q: "Wat is het verschil tussen wetenschappers en levensbeschouwing?",
+      o: ["Wetenschappers zoeken bewijsbare antwoorden voor iedereen. Bij levensbeschouwing denk je na over diepe, persoonlijke vragen", "Wetenschappers stellen alleen persoonlijke vragen", "Levensbeschouwing zoekt alleen bewijsbare feiten", "Er is geen verschil"] },
+    { ch: 3, t: "mc", q: "Waarom leiden levensvragen niet tot één definitief antwoord?",
+      o: ["Het zijn zulke persoonlijke vragen dat mensen steeds opnieuw zelf hun eigen antwoord moeten zoeken", "Omdat niemand erover nadenkt", "Omdat wetenschappers te dom zijn", "Omdat het gewone vragen zijn"] },
+    { ch: 3, t: "fill", q: "De oude Grieken deden niets liever dan nadenken en discussiëren over diepe vragen. Dat noemden ze ...", a: ["filosoferen"], show: "filosoferen" }
+  ];
+
+  var PICK = { 1: 4, 2: 5, 3: 6 };
+  var TYPE_LABEL = { mc: "meerkeuze", tf: "waar of niet waar", fill: "invullen" };
+
+  var quizEl = document.getElementById("quiz");
+  var resultEl = document.getElementById("result");
+  var checkBtn = document.getElementById("checkBtn");
+  var newBtn = document.getElementById("newBtn");
+  var themeBtn = document.getElementById("themeBtn");
+
+  var current = [];
+  var checked = false;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function norm(s) {
+    return String(s).toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9 ]/g, " ")
+      .replace(/\s+/g, " ").trim()
+      .replace(/^(een|de|het) /, "");
+  }
+
+  function pickSet() {
+    var set, tries = 0;
+    do {
+      set = [];
+      [1, 2, 3].forEach(function (ch) {
+        var pool = BANK.filter(function (b) { return b.ch === ch; });
+        set = set.concat(shuffle(pool).slice(0, PICK[ch]));
+      });
+      var nonMc = set.filter(function (b) { return b.t !== "mc"; }).length;
+      tries++;
+      if (nonMc >= 4 && nonMc <= 8) break;
+    } while (tries < 100);
+    return shuffle(set);
+  }
+
+  function makeOption(name, value, label, onPick) {
+    var l = document.createElement("label");
+    l.className = "opt";
+    var inp = document.createElement("input");
+    inp.type = "radio";
+    inp.name = name;
+    inp.value = value;
+    var sp = document.createElement("span");
+    sp.textContent = label;
+    l.appendChild(inp);
+    l.appendChild(sp);
+    inp.addEventListener("change", onPick);
+    return l;
+  }
+
+  function build() {
+    current = pickSet().map(function (b) {
+      var item = { src: b };
+      if (b.t === "mc") {
+        item.options = shuffle(b.o.map(function (text, i) { return { text: text, correct: i === 0 }; }));
+      }
+      return item;
+    });
+    checked = false;
+    resultEl.hidden = true;
+    resultEl.textContent = "";
+    checkBtn.disabled = false;
+    quizEl.textContent = "";
+
+    current.forEach(function (item, idx) {
+      var b = item.src;
+      var fs = document.createElement("fieldset");
+      fs.className = "q";
+      var lg = document.createElement("legend");
+      lg.textContent = "Vraag " + (idx + 1);
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = TYPE_LABEL[b.t];
+      lg.appendChild(tag);
+      fs.appendChild(lg);
+
+      var p = document.createElement("p");
+      p.className = "qtext";
+      p.textContent = b.q;
+      fs.appendChild(p);
+
+      var name = "q" + idx;
+      function highlight() {
+        var labels = fs.querySelectorAll(".opt");
+        for (var i = 0; i < labels.length; i++) {
+          labels[i].classList.toggle("picked", labels[i].querySelector("input").checked);
+        }
+      }
+      if (b.t === "mc") {
+        item.options.forEach(function (o, i) {
+          fs.appendChild(makeOption(name, String(i), o.text, highlight));
+        });
+      } else if (b.t === "tf") {
+        fs.appendChild(makeOption(name, "true", "Waar", highlight));
+        fs.appendChild(makeOption(name, "false", "Niet waar", highlight));
+      } else {
+        var inp = document.createElement("input");
+        inp.type = "text";
+        inp.name = name;
+        inp.setAttribute("aria-label", "Jouw antwoord op vraag " + (idx + 1));
+        inp.autocapitalize = "none";
+        inp.autocomplete = "off";
+        inp.spellcheck = false;
+        fs.appendChild(inp);
+      }
+      item.el = fs;
+      quizEl.appendChild(fs);
+    });
+  }
+
+  function getAnswer(item, idx) {
+    var b = item.src;
+    if (b.t === "fill") {
+      return item.el.querySelector("input[type=text]").value.trim();
+    }
+    var sel = item.el.querySelector("input[type=radio]:checked");
+    return sel ? sel.value : null;
+  }
+
+  function correctText(item) {
+    var b = item.src;
+    if (b.t === "mc") {
+      return item.options.filter(function (o) { return o.correct; })[0].text;
+    }
+    if (b.t === "tf") return b.a ? "Waar" : "Niet waar";
+    return b.show;
+  }
+
+  function check() {
+    if (checked) return;
+    checked = true;
+    var score = 0;
+    current.forEach(function (item, idx) {
+      var b = item.src;
+      var ans = getAnswer(item, idx);
+      var ok = false;
+      if (ans !== null && ans !== "") {
+        if (b.t === "mc") ok = item.options[parseInt(ans, 10)].correct;
+        else if (b.t === "tf") ok = (ans === "true") === b.a;
+        else ok = b.a.map(norm).indexOf(norm(ans)) !== -1;
+      }
+      if (ok) score++;
+      item.el.classList.add(ok ? "ok" : "bad");
+      var fb = document.createElement("p");
+      fb.className = "fb " + (ok ? "ok" : "bad");
+      if (ok) {
+        fb.textContent = "Goed!";
+      } else {
+        fb.textContent = (ans === null || ans === "" ? "Niet beantwoord. " : "Fout. ") + "Het juiste antwoord: " + correctText(item);
+      }
+      item.el.appendChild(fb);
+      Array.prototype.forEach.call(item.el.querySelectorAll("input"), function (i) { i.disabled = true; });
+    });
+    var total = current.length;
+    var msg = score >= 12 ? "Top!" : (score >= 9 ? "Prima, bijna er." : "Nog even oefenen.");
+    resultEl.textContent = "Score: " + score + " van " + total + ". " + msg;
+    resultEl.hidden = false;
+    checkBtn.disabled = true;
+    resultEl.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  checkBtn.addEventListener("click", check);
+  newBtn.addEventListener("click", function () {
+    build();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ---------- Light / dark ---------- */
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    themeBtn.textContent = theme === "dark" ? "Licht" : "Donker";
+    themeBtn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+  }
+  var saved = null;
+  try { saved = localStorage.getItem("lb-theme"); } catch (e) {}
+  var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(saved === "dark" || saved === "light" ? saved : (prefersDark ? "dark" : "light"));
+  themeBtn.addEventListener("click", function () {
+    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try { localStorage.setItem("lb-theme", next); } catch (e) {}
+  });
+
+  build();
+})();
+</script>
+</body>
+</html>
